@@ -1,30 +1,33 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:seriya_app/main.dart';
+import 'package:seriya_app/app.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('shows the passenger transport dashboard', (tester) async {
+    await tester.pumpWidget(const SeriyaApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('Morning to office'), findsOneWidget);
+    expect(find.text('Vehicle is on the way'), findsOneWidget);
+    expect(find.text("I'm riding"), findsOneWidget);
+    expect(find.text('Live map'), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+  testWidgets('allows the passenger to change attendance', (tester) async {
+    await tester.pumpWidget(const SeriyaApp());
+
+    await tester.tap(find.text("I'm riding"));
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Not riding'), findsOneWidget);
+    expect(find.text('You are not travelling on this shift'), findsOneWidget);
+  });
+
+  testWidgets('opens the morning and evening shift picker', (tester) async {
+    await tester.pumpWidget(const SeriyaApp());
+
+    await tester.tap(find.text('Morning to office'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Choose today’s shift'), findsOneWidget);
+    expect(find.text('Evening to home'), findsOneWidget);
   });
 }
