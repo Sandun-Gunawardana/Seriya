@@ -1,0 +1,58 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function ownsProfile(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function isApprovedAdmin() {
+      return signedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.approvedRole == 'admin'
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'approved';
+    }
+
+    match /users/{userId} {
+      allow create: if ownsProfile(userId)
+        && request.resource.data.keys().hasOnly([
+          'fullName',
+          'employeeId',
+          'email',
+          'phone',
+          'requestedRole',
+          'approvedRole',
+          'status',
+          'routeId',
+          'vehicleId',
+          'createdAt',
+          'updatedAt'
+        ])
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.requestedRole in ['passenger', 'driver']
+        && request.resource.data.approvedRole == null
+        && request.resource.data.status == 'pending'
+        && request.resource.data.routeId == null
+        && request.resource.data.vehicleId == null
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+
+      allow read: if ownsProfile(userId) || isApprovedAdmin();
+
+      allow update: if isApprovedAdmin()
+        || (ownsProfile(userId)
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['fullName', 'phone', 'updatedAt'])
+          && request.resource.data.updatedAt == request.time);
+
+      allow delete: if isApprovedAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

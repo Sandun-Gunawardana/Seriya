@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../../services/auth_service.dart';
 import '../../widgets/auth_page_shell.dart';
 import '../dashboard_screen.dart';
 import 'registration_screen.dart';
+import 'registration_success_screen.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+  const SignInScreen({super.key, required this.authService});
+
+  final AuthService authService;
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -13,34 +17,98 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _hidePassword = true;
   bool _rememberMe = true;
+  bool _isBusy = false;
 
-  void _signIn() {
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signIn() async {
     FocusScope.of(context).unfocus();
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => const DashboardScreen()),
-    );
+    setState(() => _isBusy = true);
+    try {
+      final result = await widget.authService.signIn(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      if (!mounted) return;
+
+      switch (result.status) {
+        case AccountStatus.approved:
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute<void>(builder: (_) => const DashboardScreen()),
+          );
+        case AccountStatus.pending:
+          final role = result.role == 'driver'
+              ? RequestedRole.driver
+              : RequestedRole.passenger;
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => RegistrationSuccessScreen(role: role),
+            ),
+          );
+        case AccountStatus.rejected:
+          _showError(
+            'Your registration was not approved. Contact the administrator.',
+          );
+        case AccountStatus.disabled:
+          _showError('Your account is disabled. Contact the administrator.');
+      }
+    } on AuthFlowException catch (error) {
+      if (mounted) _showError(error.message);
+    } finally {
+      if (mounted) setState(() => _isBusy = false);
+    }
   }
 
-  void _showPasswordReset() {
-    showDialog<void>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Reset password'),
-        content: const Text(
-          'Password recovery will send a secure reset link to your registered email address.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+  Future<void> _showPasswordReset() async {
+    final validationMessage = validateEmail(_emailController.text);
+    if (validationMessage != null) {
+      _showError('Enter your registered email address first.');
+      return;
+    }
+
+    setState(() => _isBusy = true);
+    try {
+      await widget.authService.sendPasswordResetEmail(_emailController.text);
+      if (!mounted) return;
+      await showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Check your email'),
+          content: const Text(
+            'A secure password-reset link has been sent to your email address.',
           ),
-        ],
-      ),
-    );
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+          ],
+        ),
+      );
+    } on AuthFlowException catch (error) {
+      if (mounted) _showError(error.message);
+    } finally {
+      if (mounted) setState(() => _isBusy = false);
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+      );
   }
 
   @override
@@ -71,6 +139,7 @@ class _SignInScreenState extends State<SignInScreen> {
             const SizedBox(height: 23),
             TextFormField(
               key: const Key('signInEmail'),
+              controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.email],
@@ -83,6 +152,7 @@ class _SignInScreenState extends State<SignInScreen> {
             const SizedBox(height: 15),
             TextFormField(
               key: const Key('signInPassword'),
+              controller: _passwordController,
               obscureText: _hidePassword,
               textInputAction: TextInputAction.done,
               autofillHints: const [AutofillHints.password],
@@ -133,16 +203,18 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const Spacer(),
                 TextButton(
-                  onPressed: _showPasswordReset,
+                  onPressed: _isBusy ? null : _showPasswordReset,
                   child: const Text('Forgot password?'),
                 ),
               ],
             ),
             const SizedBox(height: 12),
             AuthPrimaryButton(
-              label: 'Sign in',
-              icon: Icons.arrow_forward_rounded,
-              onPressed: _signIn,
+              label: _isBusy ? 'Signing in…' : 'Sign in',
+              icon: _isBusy
+                  ? Icons.hourglass_top_rounded
+                  : Icons.arrow_forward_rounded,
+              onPressed: _isBusy ? () {} : _signIn,
             ),
             const SizedBox(height: 19),
             Row(
@@ -156,7 +228,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(
-                        builder: (_) => const RegistrationScreen(),
+                        builder: (_) =>
+                            RegistrationScreen(authService: widget.authService),
                       ),
                     );
                   },

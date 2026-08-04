@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'screens/auth/sign_in_screen.dart';
+import 'services/auth_service.dart';
 
 class SeriyaApp extends StatelessWidget {
-  const SeriyaApp({super.key});
+  const SeriyaApp({super.key, this.authService});
+
+  final AuthService? authService;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +48,7 @@ class SeriyaApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SignInScreen(),
+      home: SignInScreen(authService: authService ?? FirebaseAuthService()),
     );
   }
 }

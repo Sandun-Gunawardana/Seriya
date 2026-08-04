@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:seriya_app/app.dart';
 import 'package:seriya_app/screens/dashboard_screen.dart';
+import 'package:seriya_app/services/auth_service.dart';
 
 void main() {
   testWidgets('opens on the sign-in screen', (tester) async {
-    await tester.pumpWidget(const SeriyaApp());
+    await tester.pumpWidget(SeriyaApp(authService: FakeAuthService()));
 
     expect(find.text('Welcome back'), findsOneWidget);
     expect(find.text('Sign in'), findsOneWidget);
@@ -13,7 +14,7 @@ void main() {
   });
 
   testWidgets('valid sign-in opens the dashboard', (tester) async {
-    await tester.pumpWidget(const SeriyaApp());
+    await tester.pumpWidget(SeriyaApp(authService: FakeAuthService()));
 
     await tester.enterText(
       find.byKey(const Key('signInEmail')),
@@ -33,7 +34,7 @@ void main() {
   testWidgets('create account opens passenger and driver registration', (
     tester,
   ) async {
-    await tester.pumpWidget(const SeriyaApp());
+    await tester.pumpWidget(SeriyaApp(authService: FakeAuthService()));
 
     await tester.ensureVisible(find.text('Create account'));
     await tester.tap(find.text('Create account'));
@@ -54,6 +55,25 @@ void main() {
     expect(find.text('Not riding'), findsOneWidget);
     expect(find.text('You are not travelling on this shift'), findsOneWidget);
   });
+}
+
+class FakeAuthService implements AuthService {
+  @override
+  Future<void> register(RegistrationDetails details) async {}
+
+  @override
+  Future<void> sendPasswordResetEmail(String email) async {}
+
+  @override
+  Future<SignInResult> signIn({
+    required String email,
+    required String password,
+  }) async {
+    return const SignInResult(
+      status: AccountStatus.approved,
+      role: 'passenger',
+    );
+  }
 }
 
 class TestApp extends StatelessWidget {

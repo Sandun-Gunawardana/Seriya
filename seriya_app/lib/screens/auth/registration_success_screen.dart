@@ -67,7 +67,7 @@ class RegistrationSuccessScreen extends StatelessWidget {
                 SizedBox(height: 13),
                 _ApprovalStep(
                   number: '3',
-                  text: 'You receive a notification and can sign in.',
+                  text: 'You receive approval and can sign in.',
                 ),
               ],
             ),

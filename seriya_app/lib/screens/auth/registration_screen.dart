@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../services/auth_service.dart';
 import '../../widgets/auth_page_shell.dart';
 import 'registration_success_screen.dart';
 
@@ -17,7 +18,9 @@ extension RequestedRoleDetails on RequestedRole {
 }
 
 class RegistrationScreen extends StatefulWidget {
-  const RegistrationScreen({super.key});
+  const RegistrationScreen({super.key, required this.authService});
+
+  final AuthService authService;
 
   @override
   State<RegistrationScreen> createState() => _RegistrationScreenState();
@@ -25,19 +28,28 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _fullNameController = TextEditingController();
+  final _employeeIdController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   RequestedRole _role = RequestedRole.passenger;
   bool _hidePassword = true;
   bool _hideConfirmation = true;
   bool _acceptedTerms = false;
+  bool _isBusy = false;
 
   @override
   void dispose() {
+    _fullNameController.dispose();
+    _employeeIdController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  void _register() {
+  Future<void> _register() async {
     FocusScope.of(context).unfocus();
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!_acceptedTerms) {
@@ -52,11 +64,37 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
     if (!isValid || !_acceptedTerms) return;
 
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => RegistrationSuccessScreen(role: _role),
-      ),
-    );
+    setState(() => _isBusy = true);
+    try {
+      await widget.authService.register(
+        RegistrationDetails(
+          fullName: _fullNameController.text,
+          employeeId: _employeeIdController.text,
+          email: _emailController.text,
+          phone: _phoneController.text,
+          password: _passwordController.text,
+          requestedRole: _role.name,
+        ),
+      );
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute<void>(
+          builder: (_) => RegistrationSuccessScreen(role: _role),
+        ),
+      );
+    } on AuthFlowException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(error.message),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+    } finally {
+      if (mounted) setState(() => _isBusy = false);
+    }
   }
 
   @override
@@ -106,6 +144,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             const SizedBox(height: 20),
             TextFormField(
               key: const Key('fullName'),
+              controller: _fullNameController,
               textCapitalization: TextCapitalization.words,
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.name],
@@ -120,6 +159,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             const SizedBox(height: 14),
             TextFormField(
               key: const Key('employeeId'),
+              controller: _employeeIdController,
               textCapitalization: TextCapitalization.characters,
               textInputAction: TextInputAction.next,
               decoration: const InputDecoration(
@@ -133,6 +173,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             const SizedBox(height: 14),
             TextFormField(
               key: const Key('registrationEmail'),
+              controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.email],
@@ -145,6 +186,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             const SizedBox(height: 14),
             TextFormField(
               key: const Key('phoneNumber'),
+              controller: _phoneController,
               keyboardType: TextInputType.phone,
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.telephoneNumber],
@@ -269,9 +311,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
             const SizedBox(height: 15),
             AuthPrimaryButton(
-              label: 'Submit registration',
-              icon: Icons.how_to_reg_rounded,
-              onPressed: _register,
+              label: _isBusy ? 'Creating account…' : 'Submit registration',
+              icon: _isBusy
+                  ? Icons.hourglass_top_rounded
+                  : Icons.how_to_reg_rounded,
+              onPressed: _isBusy ? () {} : _register,
             ),
           ],
         ),
