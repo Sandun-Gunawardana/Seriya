@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/dashboard_screen.dart';
+import 'screens/auth/sign_in_screen.dart';
 
 class SeriyaApp extends StatelessWidget {
   const SeriyaApp({super.key});
@@ -20,8 +20,32 @@ class SeriyaApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: const Color(0xFFF4F7F6),
         fontFamily: 'Arial',
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFFF5F8F7),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 16,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: Color(0xFFDDE6E3)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: Color(0xFFDDE6E3)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: seed, width: 1.6),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: Color(0xFFE85D4A)),
+          ),
+        ),
       ),
-      home: const DashboardScreen(),
+      home: const SignInScreen(),
     );
   }
 }
