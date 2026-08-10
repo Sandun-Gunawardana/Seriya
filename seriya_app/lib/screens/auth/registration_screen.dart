@@ -1,21 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../models/requested_role.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/auth_page_shell.dart';
-import 'registration_success_screen.dart';
-
-enum RequestedRole { passenger, driver }
-
-extension RequestedRoleDetails on RequestedRole {
-  String get title => this == RequestedRole.passenger ? 'Passenger' : 'Driver';
-  String get description => this == RequestedRole.passenger
-      ? 'View your assigned vehicle and submit attendance'
-      : 'Manage assigned trips and passenger pickups';
-  IconData get icon => this == RequestedRole.passenger
-      ? Icons.airline_seat_recline_normal_rounded
-      : Icons.airport_shuttle_rounded;
-}
+import 'phone_verification_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key, required this.authService});
@@ -32,10 +21,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _employeeIdController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _passwordController = TextEditingController();
   RequestedRole _role = RequestedRole.passenger;
-  bool _hidePassword = true;
-  bool _hideConfirmation = true;
   bool _acceptedTerms = false;
   bool _isBusy = false;
 
@@ -45,7 +31,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     _employeeIdController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
-    _passwordController.dispose();
     super.dispose();
   }
 
@@ -66,20 +51,23 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     setState(() => _isBusy = true);
     try {
-      await widget.authService.register(
-        RegistrationDetails(
-          fullName: _fullNameController.text,
-          employeeId: _employeeIdController.text,
-          email: _emailController.text,
-          phone: _phoneController.text,
-          password: _passwordController.text,
-          requestedRole: _role.name,
-        ),
+      final details = RegistrationDetails(
+        fullName: _fullNameController.text,
+        employeeId: _employeeIdController.text,
+        email: _emailController.text,
+        phone: normalizeSriLankanPhoneNumber(_phoneController.text),
+        requestedRole: _role.name,
       );
+      final session = await widget.authService.sendPhoneCode(details.phone);
       if (!mounted) return;
-      Navigator.of(context).pushReplacement(
+      await Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (_) => RegistrationSuccessScreen(role: _role),
+          builder: (_) => PhoneVerificationScreen.registration(
+            authService: widget.authService,
+            phoneNumber: details.phone,
+            session: session,
+            details: details,
+          ),
         ),
       );
     } on AuthFlowException catch (error) {
@@ -116,7 +104,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
             const SizedBox(height: 7),
             Text(
-              'Register your details. An administrator will verify your account and make the vehicle assignment.',
+              'Verify your mobile number, then an administrator will review your account and make the vehicle assignment.',
               style: TextStyle(
                 color: seriyaNavy.withValues(alpha: 0.58),
                 fontSize: 13,
@@ -178,82 +166,33 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.email],
               decoration: const InputDecoration(
-                labelText: 'Work email address',
+                labelText: 'Email address (optional)',
                 prefixIcon: Icon(Icons.mail_outline_rounded),
               ),
-              validator: validateEmail,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) return null;
+                return validateEmail(value);
+              },
             ),
             const SizedBox(height: 14),
             TextFormField(
               key: const Key('phoneNumber'),
               controller: _phoneController,
               keyboardType: TextInputType.phone,
-              textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.telephoneNumber],
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9+ ]')),
-                LengthLimitingTextInputFormatter(15),
+                LengthLimitingTextInputFormatter(16),
               ],
               decoration: const InputDecoration(
-                labelText: 'Mobile number',
+                labelText: 'Mobile number (required)',
+                hintText: '076 123 4567',
+                helperText: 'This will be your sign-in number',
                 prefixIcon: Icon(Icons.phone_outlined),
               ),
-              validator: (value) {
-                final digits = (value ?? '').replaceAll(RegExp(r'\D'), '');
-                return digits.length < 9 ? 'Enter a valid mobile number' : null;
-              },
-            ),
-            const SizedBox(height: 14),
-            TextFormField(
-              key: const Key('registrationPassword'),
-              controller: _passwordController,
-              obscureText: _hidePassword,
-              textInputAction: TextInputAction.next,
-              autofillHints: const [AutofillHints.newPassword],
-              decoration: InputDecoration(
-                labelText: 'Create password',
-                helperText: 'Use at least 8 characters',
-                prefixIcon: const Icon(Icons.lock_outline_rounded),
-                suffixIcon: IconButton(
-                  onPressed: () =>
-                      setState(() => _hidePassword = !_hidePassword),
-                  tooltip: _hidePassword ? 'Show password' : 'Hide password',
-                  icon: Icon(
-                    _hidePassword
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
-                  ),
-                ),
-              ),
-              validator: (value) => value == null || value.length < 8
-                  ? 'Password must have at least 8 characters'
-                  : null,
-            ),
-            const SizedBox(height: 14),
-            TextFormField(
-              key: const Key('confirmPassword'),
-              obscureText: _hideConfirmation,
               textInputAction: TextInputAction.done,
               onFieldSubmitted: (_) => _register(),
-              decoration: InputDecoration(
-                labelText: 'Confirm password',
-                prefixIcon: const Icon(Icons.lock_reset_rounded),
-                suffixIcon: IconButton(
-                  onPressed: () =>
-                      setState(() => _hideConfirmation = !_hideConfirmation),
-                  tooltip: _hideConfirmation
-                      ? 'Show password'
-                      : 'Hide password',
-                  icon: Icon(
-                    _hideConfirmation
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
-                  ),
-                ),
-              ),
-              validator: (value) => value != _passwordController.text
-                  ? 'Passwords do not match'
-                  : null,
+              validator: validateSriLankanPhoneNumber,
             ),
             const SizedBox(height: 12),
             InkWell(
@@ -311,7 +250,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
             const SizedBox(height: 15),
             AuthPrimaryButton(
-              label: _isBusy ? 'Creating account…' : 'Submit registration',
+              label: _isBusy ? 'Sending code…' : 'Verify phone and register',
               icon: _isBusy
                   ? Icons.hourglass_top_rounded
                   : Icons.how_to_reg_rounded,

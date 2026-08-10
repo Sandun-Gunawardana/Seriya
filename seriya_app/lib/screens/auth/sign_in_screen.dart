@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../services/auth_service.dart';
 import '../../widgets/auth_page_shell.dart';
-import '../dashboard_screen.dart';
+import 'phone_verification_screen.dart';
 import 'registration_screen.dart';
-import 'registration_success_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key, required this.authService});
@@ -17,83 +17,31 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _hidePassword = true;
-  bool _rememberMe = true;
+  final _phoneController = TextEditingController();
   bool _isBusy = false;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
-  Future<void> _signIn() async {
+  Future<void> _sendCode() async {
     FocusScope.of(context).unfocus();
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     setState(() => _isBusy = true);
     try {
-      final result = await widget.authService.signIn(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
+      final phone = normalizeSriLankanPhoneNumber(_phoneController.text);
+      final session = await widget.authService.sendPhoneCode(phone);
       if (!mounted) return;
-
-      switch (result.status) {
-        case AccountStatus.approved:
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute<void>(builder: (_) => const DashboardScreen()),
-          );
-        case AccountStatus.pending:
-          final role = result.role == 'driver'
-              ? RequestedRole.driver
-              : RequestedRole.passenger;
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (_) => RegistrationSuccessScreen(role: role),
-            ),
-          );
-        case AccountStatus.rejected:
-          _showError(
-            'Your registration was not approved. Contact the administrator.',
-          );
-        case AccountStatus.disabled:
-          _showError('Your account is disabled. Contact the administrator.');
-      }
-    } on AuthFlowException catch (error) {
-      if (mounted) _showError(error.message);
-    } finally {
-      if (mounted) setState(() => _isBusy = false);
-    }
-  }
-
-  Future<void> _showPasswordReset() async {
-    final validationMessage = validateEmail(_emailController.text);
-    if (validationMessage != null) {
-      _showError('Enter your registered email address first.');
-      return;
-    }
-
-    setState(() => _isBusy = true);
-    try {
-      await widget.authService.sendPasswordResetEmail(_emailController.text);
-      if (!mounted) return;
-      await showDialog<void>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Check your email'),
-          content: const Text(
-            'A secure password-reset link has been sent to your email address.',
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => PhoneVerificationScreen.signIn(
+            authService: widget.authService,
+            phoneNumber: phone,
+            session: session,
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Close'),
-            ),
-          ],
         ),
       );
     } on AuthFlowException catch (error) {
@@ -129,7 +77,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             const SizedBox(height: 7),
             Text(
-              'Sign in to view your assigned trip and live vehicle.',
+              'Sign in with your registered mobile number.',
               style: TextStyle(
                 color: seriyaNavy.withValues(alpha: 0.58),
                 fontSize: 13,
@@ -138,83 +86,31 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             const SizedBox(height: 23),
             TextFormField(
-              key: const Key('signInEmail'),
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
-              autofillHints: const [AutofillHints.email],
-              decoration: const InputDecoration(
-                labelText: 'Email address',
-                prefixIcon: Icon(Icons.mail_outline_rounded),
-              ),
-              validator: validateEmail,
-            ),
-            const SizedBox(height: 15),
-            TextFormField(
-              key: const Key('signInPassword'),
-              controller: _passwordController,
-              obscureText: _hidePassword,
+              key: const Key('signInPhone'),
+              controller: _phoneController,
+              keyboardType: TextInputType.phone,
               textInputAction: TextInputAction.done,
-              autofillHints: const [AutofillHints.password],
-              onFieldSubmitted: (_) => _signIn(),
-              decoration: InputDecoration(
-                labelText: 'Password',
-                prefixIcon: const Icon(Icons.lock_outline_rounded),
-                suffixIcon: IconButton(
-                  onPressed: () =>
-                      setState(() => _hidePassword = !_hidePassword),
-                  tooltip: _hidePassword ? 'Show password' : 'Hide password',
-                  icon: Icon(
-                    _hidePassword
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
-                  ),
-                ),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Enter your password';
-                }
-                if (value.length < 6) {
-                  return 'Password must have at least 6 characters';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                SizedBox(
-                  width: 38,
-                  child: Checkbox(
-                    value: _rememberMe,
-                    activeColor: seriyaTeal,
-                    onChanged: (value) =>
-                        setState(() => _rememberMe = value ?? false),
-                  ),
-                ),
-                const Text(
-                  'Remember me',
-                  style: TextStyle(
-                    color: seriyaNavy,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const Spacer(),
-                TextButton(
-                  onPressed: _isBusy ? null : _showPasswordReset,
-                  child: const Text('Forgot password?'),
-                ),
+              autofillHints: const [AutofillHints.telephoneNumber],
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9+ ]')),
+                LengthLimitingTextInputFormatter(16),
               ],
+              onFieldSubmitted: (_) => _sendCode(),
+              decoration: const InputDecoration(
+                labelText: 'Mobile number',
+                hintText: '076 123 4567',
+                helperText: 'Sri Lankan numbers only (+94)',
+                prefixIcon: Icon(Icons.phone_outlined),
+              ),
+              validator: validateSriLankanPhoneNumber,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 22),
             AuthPrimaryButton(
-              label: _isBusy ? 'Signing in…' : 'Sign in',
+              label: _isBusy ? 'Sending code…' : 'Send verification code',
               icon: _isBusy
                   ? Icons.hourglass_top_rounded
-                  : Icons.arrow_forward_rounded,
-              onPressed: _isBusy ? () {} : _signIn,
+                  : Icons.sms_outlined,
+              onPressed: _isBusy ? () {} : _sendCode,
             ),
             const SizedBox(height: 19),
             Row(

@@ -4,6 +4,8 @@
 *.pyc
 *.swp
 .DS_Store
+*firebase-adminsdk*.json
+*service-account*.json
 .atom/
 .build/
 .buildlog/

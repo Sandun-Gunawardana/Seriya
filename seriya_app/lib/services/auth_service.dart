@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
 
-// Development-only switch. Set this to true before production release.
-const bool requireEmailVerification = false;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 
 enum AccountStatus { pending, approved, rejected, disabled }
 
@@ -19,7 +18,6 @@ class RegistrationDetails {
     required this.employeeId,
     required this.email,
     required this.phone,
-    required this.password,
     required this.requestedRole,
   });
 
@@ -27,19 +25,31 @@ class RegistrationDetails {
   final String employeeId;
   final String email;
   final String phone;
-  final String password;
   final String requestedRole;
 }
 
+class PhoneCodeSession {
+  const PhoneCodeSession._({required this.challengeId});
+
+  const PhoneCodeSession.test() : challengeId = 'test-challenge';
+
+  final String challengeId;
+  bool get codeRequired => true;
+}
+
 abstract class AuthService {
-  Future<SignInResult> signIn({
-    required String email,
-    required String password,
+  Future<PhoneCodeSession> sendPhoneCode(String phoneNumber);
+
+  Future<SignInResult> verifySignInCode({
+    required PhoneCodeSession session,
+    required String smsCode,
   });
 
-  Future<void> register(RegistrationDetails details);
-
-  Future<void> sendPasswordResetEmail(String email);
+  Future<void> registerWithPhoneCode({
+    required PhoneCodeSession session,
+    required String smsCode,
+    required RegistrationDetails details,
+  });
 }
 
 class AuthFlowException implements Exception {
@@ -51,124 +61,152 @@ class AuthFlowException implements Exception {
   String toString() => message;
 }
 
+String normalizeSriLankanPhoneNumber(String value) {
+  var digits = value.replaceAll(RegExp(r'\D'), '');
+  if (digits.startsWith('94')) {
+    return '+$digits';
+  }
+  if (digits.startsWith('0')) {
+    digits = digits.substring(1);
+  }
+  return '+94$digits';
+}
+
+String? validateSriLankanPhoneNumber(String? value) {
+  final normalized = normalizeSriLankanPhoneNumber(value ?? '');
+  return RegExp(r'^\+947\d{8}$').hasMatch(normalized)
+      ? null
+      : 'Enter a valid Sri Lankan mobile number';
+}
+
+/// Uses the Seriya Vercel backend for Text.lk OTP verification, then signs in
+/// to Firebase with the custom token returned by that trusted backend.
 class FirebaseAuthService implements AuthService {
-  FirebaseAuthService({FirebaseAuth? auth, FirebaseFirestore? firestore})
-    : _auth = auth ?? FirebaseAuth.instance,
-      _firestore = firestore ?? FirebaseFirestore.instance;
+  FirebaseAuthService({
+    FirebaseAuth? auth,
+    http.Client? client,
+    String? apiBaseUrl,
+  }) : _auth = auth ?? FirebaseAuth.instance,
+       _client = client ?? http.Client(),
+       _apiBaseUrl = _normalizeBaseUrl(
+         apiBaseUrl ??
+             const String.fromEnvironment(
+               'AUTH_API_BASE_URL',
+               defaultValue: 'https://seriya-backend.vercel.app',
+             ),
+       );
 
   final FirebaseAuth _auth;
-  final FirebaseFirestore _firestore;
+  final http.Client _client;
+  final String _apiBaseUrl;
 
   @override
-  Future<SignInResult> signIn({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      final credential = await _auth.signInWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
+  Future<PhoneCodeSession> sendPhoneCode(String phoneNumber) async {
+    final response = await _post('/api/auth/send-otp', {
+      'phone': normalizeSriLankanPhoneNumber(phoneNumber),
+    });
+    final challengeId = response['challengeId'];
+    if (challengeId is! String || challengeId.isEmpty) {
+      throw const AuthFlowException(
+        'The verification service returned an invalid response.',
       );
-      final user = credential.user;
-      if (user == null) {
-        throw const AuthFlowException('Unable to sign in. Please try again.');
-      }
-      if (requireEmailVerification && !user.emailVerified) {
-        await _auth.signOut();
-        throw const AuthFlowException(
-          'Verify your email address before signing in.',
-        );
-      }
-
-      final profile = await _firestore.collection('users').doc(user.uid).get();
-      if (!profile.exists) {
-        await _auth.signOut();
-        throw const AuthFlowException(
-          'Your employee profile was not found. Contact the administrator.',
-        );
-      }
-
-      final data = profile.data() ?? <String, dynamic>{};
-      final status = _parseStatus(data['status'] as String?);
-      final role =
-          (data['approvedRole'] as String?) ??
-          (data['requestedRole'] as String?) ??
-          'passenger';
-
-      if (status != AccountStatus.approved) {
-        await _auth.signOut();
-      }
-      return SignInResult(status: status, role: role);
-    } on FirebaseAuthException catch (error) {
-      throw AuthFlowException(_messageForAuthCode(error.code));
-    } on FirebaseException catch (error) {
-      throw AuthFlowException(_messageForFirebaseError(error));
     }
+    return PhoneCodeSession._(challengeId: challengeId);
   }
 
   @override
-  Future<void> register(RegistrationDetails details) async {
-    User? createdUser;
-    try {
-      final credential = await _auth.createUserWithEmailAndPassword(
-        email: details.email.trim(),
-        password: details.password,
-      );
-      createdUser = credential.user;
-      if (createdUser == null) {
-        throw const AuthFlowException(
-          'The account could not be created. Please try again.',
-        );
-      }
+  Future<SignInResult> verifySignInCode({
+    required PhoneCodeSession session,
+    required String smsCode,
+  }) async {
+    final response = await _post('/api/auth/verify-otp', {
+      'challengeId': session.challengeId,
+      'code': smsCode.trim(),
+      'mode': 'signIn',
+    });
+    await _signInWithBackendToken(response);
 
-      await createdUser.updateDisplayName(details.fullName.trim());
-      await _firestore.collection('users').doc(createdUser.uid).set({
+    final status = _parseStatus(response['status'] as String?);
+    final role = response['approvedRole'] is String
+        ? response['approvedRole']! as String
+        : 'passenger';
+    if (status != AccountStatus.approved) {
+      await _auth.signOut();
+    }
+    return SignInResult(status: status, role: role);
+  }
+
+  @override
+  Future<void> registerWithPhoneCode({
+    required PhoneCodeSession session,
+    required String smsCode,
+    required RegistrationDetails details,
+  }) async {
+    final response = await _post('/api/auth/verify-otp', {
+      'challengeId': session.challengeId,
+      'code': smsCode.trim(),
+      'mode': 'registration',
+      'profile': {
         'fullName': details.fullName.trim(),
         'employeeId': details.employeeId.trim().toUpperCase(),
-        'email': createdUser.email ?? details.email.trim(),
-        'phone': details.phone.trim(),
+        'email': details.email.trim().toLowerCase(),
         'requestedRole': details.requestedRole,
-        'approvedRole': null,
-        'status': 'pending',
-        'routeId': null,
-        'vehicleId': null,
-        'createdAt': FieldValue.serverTimestamp(),
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-      if (requireEmailVerification) {
-        await createdUser.sendEmailVerification();
-      }
-      await _auth.signOut();
-    } on FirebaseAuthException catch (error) {
-      throw AuthFlowException(_messageForAuthCode(error.code));
-    } on FirebaseException catch (error) {
-      await _deleteIncompleteUser(createdUser);
-      throw AuthFlowException(_messageForFirebaseError(error));
-    } on AuthFlowException {
-      rethrow;
+      },
+    });
+    await _signInWithBackendToken(response);
+    await _auth.signOut();
+  }
+
+  Future<Map<String, dynamic>> _post(
+    String path,
+    Map<String, dynamic> body,
+  ) async {
+    http.Response response;
+    try {
+      response = await _client
+          .post(
+            Uri.parse('$_apiBaseUrl$path'),
+            headers: const {'Content-Type': 'application/json'},
+            body: jsonEncode(body),
+          )
+          .timeout(const Duration(seconds: 20));
     } catch (_) {
-      await _deleteIncompleteUser(createdUser);
       throw const AuthFlowException(
-        'Registration could not be completed. Please try again.',
+        'Could not reach the verification service. Check your internet and try again.',
       );
     }
+
+    Map<String, dynamic> payload;
+    try {
+      final decoded = jsonDecode(response.body);
+      payload = decoded is Map<String, dynamic> ? decoded : <String, dynamic>{};
+    } catch (_) {
+      payload = <String, dynamic>{};
+    }
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      final error = payload['error'];
+      final message = error is Map<String, dynamic> ? error['message'] : null;
+      throw AuthFlowException(
+        message is String && message.isNotEmpty
+            ? message
+            : 'The verification request failed. Please try again.',
+      );
+    }
+    return payload;
   }
 
-  @override
-  Future<void> sendPasswordResetEmail(String email) async {
+  Future<void> _signInWithBackendToken(Map<String, dynamic> response) async {
+    final token = response['customToken'];
+    if (token is! String || token.isEmpty) {
+      throw const AuthFlowException(
+        'The verification service did not return a Firebase session.',
+      );
+    }
     try {
-      await _auth.sendPasswordResetEmail(email: email.trim());
+      await _auth.signInWithCustomToken(token);
     } on FirebaseAuthException catch (error) {
       throw AuthFlowException(_messageForAuthCode(error.code));
-    }
-  }
-
-  Future<void> _deleteIncompleteUser(User? user) async {
-    if (user == null) return;
-    try {
-      await user.delete();
-    } catch (_) {
-      // An administrator can remove the rare orphaned account if cleanup fails.
     }
   }
 
@@ -183,30 +221,19 @@ class FirebaseAuthService implements AuthService {
 
   String _messageForAuthCode(String code) {
     return switch (code) {
-      'email-already-in-use' =>
-        'An account already exists for this email address.',
-      'invalid-email' => 'Enter a valid email address.',
-      'weak-password' =>
-        'Choose a stronger password with at least 8 characters.',
-      'invalid-credential' ||
-      'user-not-found' ||
-      'wrong-password' => 'The email address or password is incorrect.',
-      'user-disabled' =>
-        'This account has been disabled. Contact the administrator.',
-      'too-many-requests' => 'Too many attempts. Please wait and try again.',
+      'invalid-custom-token' || 'custom-token-mismatch' =>
+        'The Firebase login configuration is invalid. Contact the administrator.',
       'network-request-failed' =>
         'Network connection failed. Check your internet and try again.',
-      _ => 'Authentication failed. Please try again.',
+      'user-disabled' => 'Your account is disabled. Contact the administrator.',
+      _ => 'Firebase could not start your session. Please try again.',
     };
   }
 
-  String _messageForFirebaseError(FirebaseException error) {
-    if (error.code == 'permission-denied') {
-      return 'Database access is not configured. Contact the administrator.';
-    }
-    if (error.code == 'unavailable') {
-      return 'The service is temporarily unavailable. Please try again.';
-    }
-    return 'Firebase could not complete the request. Please try again.';
+  static String _normalizeBaseUrl(String value) {
+    final trimmed = value.trim();
+    return trimmed.endsWith('/')
+        ? trimmed.substring(0, trimmed.length - 1)
+        : trimmed;
   }
 }

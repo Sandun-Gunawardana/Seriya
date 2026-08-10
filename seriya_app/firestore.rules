@@ -17,35 +17,16 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-      allow create: if ownsProfile(userId)
-        && request.resource.data.keys().hasOnly([
-          'fullName',
-          'employeeId',
-          'email',
-          'phone',
-          'requestedRole',
-          'approvedRole',
-          'status',
-          'routeId',
-          'vehicleId',
-          'createdAt',
-          'updatedAt'
-        ])
-        && request.resource.data.email == request.auth.token.email
-        && request.resource.data.requestedRole in ['passenger', 'driver']
-        && request.resource.data.approvedRole == null
-        && request.resource.data.status == 'pending'
-        && request.resource.data.routeId == null
-        && request.resource.data.vehicleId == null
-        && request.resource.data.createdAt == request.time
-        && request.resource.data.updatedAt == request.time;
+      // Registration profiles are created only by the trusted Admin SDK
+      // backend after the Text.lk OTP has been verified.
+      allow create: if false;
 
       allow read: if ownsProfile(userId) || isApprovedAdmin();
 
       allow update: if isApprovedAdmin()
         || (ownsProfile(userId)
           && request.resource.data.diff(resource.data).affectedKeys()
-            .hasOnly(['fullName', 'phone', 'updatedAt'])
+            .hasOnly(['fullName', 'email', 'updatedAt'])
           && request.resource.data.updatedAt == request.time);
 
       allow delete: if isApprovedAdmin();

@@ -9,7 +9,7 @@ void main() {
     await tester.pumpWidget(SeriyaApp(authService: FakeAuthService()));
 
     expect(find.text('Welcome back'), findsOneWidget);
-    expect(find.text('Sign in'), findsOneWidget);
+    expect(find.text('Send verification code'), findsOneWidget);
     expect(find.text('Create account'), findsOneWidget);
   });
 
@@ -17,14 +17,17 @@ void main() {
     await tester.pumpWidget(SeriyaApp(authService: FakeAuthService()));
 
     await tester.enterText(
-      find.byKey(const Key('signInEmail')),
-      'passenger@seriya.lk',
+      find.byKey(const Key('signInPhone')),
+      '0761234567',
     );
+    await tester.tap(find.text('Send verification code'));
+    await tester.pumpAndSettle();
+
     await tester.enterText(
-      find.byKey(const Key('signInPassword')),
-      'secret123',
+      find.byKey(const Key('verificationCode')),
+      '123456',
     );
-    await tester.tap(find.text('Sign in'));
+    await tester.tap(find.text('Verify and continue'));
     await tester.pumpAndSettle();
 
     expect(find.text('Morning to office'), findsOneWidget);
@@ -43,7 +46,7 @@ void main() {
     expect(find.text('Create your account'), findsOneWidget);
     expect(find.text('Passenger'), findsOneWidget);
     expect(find.text('Driver'), findsOneWidget);
-    expect(find.text('Submit registration'), findsOneWidget);
+    expect(find.text('Verify phone and register'), findsOneWidget);
   });
 
   testWidgets('allows the passenger to change attendance', (tester) async {
@@ -59,15 +62,21 @@ void main() {
 
 class FakeAuthService implements AuthService {
   @override
-  Future<void> register(RegistrationDetails details) async {}
+  Future<void> registerWithPhoneCode({
+    required PhoneCodeSession session,
+    required String smsCode,
+    required RegistrationDetails details,
+  }) async {}
 
   @override
-  Future<void> sendPasswordResetEmail(String email) async {}
+  Future<PhoneCodeSession> sendPhoneCode(String phoneNumber) async {
+    return const PhoneCodeSession.test();
+  }
 
   @override
-  Future<SignInResult> signIn({
-    required String email,
-    required String password,
+  Future<SignInResult> verifySignInCode({
+    required PhoneCodeSession session,
+    required String smsCode,
   }) async {
     return const SignInResult(
       status: AccountStatus.approved,

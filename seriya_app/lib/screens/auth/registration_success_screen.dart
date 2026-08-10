@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../models/requested_role.dart';
 import '../../widgets/auth_page_shell.dart';
-import 'registration_screen.dart';
 
 class RegistrationSuccessScreen extends StatelessWidget {
   const RegistrationSuccessScreen({super.key, required this.role});
@@ -21,7 +21,7 @@ class RegistrationSuccessScreen extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: const Icon(
-              Icons.mark_email_read_rounded,
+              Icons.phone_iphone_rounded,
               color: seriyaTeal,
               size: 38,
             ),
