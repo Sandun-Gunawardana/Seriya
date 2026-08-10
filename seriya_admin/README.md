@@ -9,6 +9,7 @@ React and TypeScript web dashboard for Seriya transport administrators.
 - Live Firestore registration list
 - Search and status filtering
 - Passenger/driver approval and rejection
+- Reversible approval decisions with confirmation
 
 ## First administrator
 

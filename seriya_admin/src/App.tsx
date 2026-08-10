@@ -293,6 +293,14 @@ function Dashboard({ admin }: { admin: User }) {
   }, [filter, search, users])
 
   async function updateAccount(user: UserProfile, status: 'approved' | 'rejected') {
+    if (user.status !== 'pending') {
+      const decision = status === 'approved' ? 'approve' : 'reject'
+      const confirmed = window.confirm(
+        `Are you sure you want to ${decision} ${user.fullName}? This will replace the previous decision.`,
+      )
+      if (!confirmed) return
+    }
+
     setUpdatingId(user.id)
     setError('')
     try {
@@ -425,6 +433,24 @@ function Dashboard({ admin }: { admin: User }) {
                               title="Reject"
                             ><X size={17} /></button>
                           </div>
+                        ) : user.status === 'approved' ? (
+                          <button
+                            className="change-decision-button reject"
+                            disabled={updatingId === user.id}
+                            onClick={() => updateAccount(user, 'rejected')}
+                          >
+                            <X size={15} />
+                            Change to rejected
+                          </button>
+                        ) : user.status === 'rejected' ? (
+                          <button
+                            className="change-decision-button approve"
+                            disabled={updatingId === user.id}
+                            onClick={() => updateAccount(user, 'approved')}
+                          >
+                            <Check size={15} />
+                            Approve instead
+                          </button>
                         ) : (
                           <span className="completed-action"><CheckCircle2 size={16} />Reviewed</span>
                         )}
