@@ -22,6 +22,7 @@ import {
   Users,
   X,
   XCircle,
+  Plus,
 } from 'lucide-react'
 import {
   onAuthStateChanged,
@@ -36,6 +37,7 @@ import {
   onSnapshot,
   serverTimestamp,
   updateDoc,
+  addDoc,
   type Timestamp,
 } from 'firebase/firestore'
 
@@ -57,7 +59,23 @@ interface UserProfile {
   createdAt?: Timestamp | null
 }
 
+type VehicleStatus = 'active' | 'inactive' | 'maintenance'
+
+interface Vehicle {
+  id: string
+  plateNumber: string
+  displayName: string
+  type: string
+  capacity: number
+  status: VehicleStatus
+  assignedDriverId: string | null
+  routeId: string | null
+  createdAt?: Timestamp | null
+  updatedAt?: Timestamp | null
+}
+
 type Filter = 'all' | AccountStatus
+type Tab = 'overview' | 'people' | 'vehicles'
 
 function App() {
   const [authLoading, setAuthLoading] = useState(true)
@@ -239,7 +257,12 @@ function Dashboard({ admin }: { admin: User }) {
   const [filter, setFilter] = useState<Filter>('pending')
   const [updatingId, setUpdatingId] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
+  const [currentTab, setCurrentTab] = useState<Tab>('overview')
+  const [vehicles, setVehicles] = useState<Vehicle[]>([])
+  const [vehiclesLoading, setVehiclesLoading] = useState(true)
+  const [isAddingVehicle, setIsAddingVehicle] = useState(false)
+  const [newVehicle, setNewVehicle] = useState({ plateNumber: '', displayName: '', type: 'van', capacity: 10 })
+  const [isSaving, setIsSaving] = useState(false)
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, 'users'),
@@ -259,6 +282,29 @@ function Dashboard({ admin }: { admin: User }) {
       () => {
         setError('User registrations could not be loaded. Check Firestore rules.')
         setLoading(false)
+      },
+    )
+    return unsubscribe
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, 'vehicles'),
+      (snapshot) => {
+        const list = snapshot.docs.map((snapshotDoc) => ({
+          id: snapshotDoc.id,
+          ...snapshotDoc.data(),
+        })) as Vehicle[]
+        list.sort(
+          (a, b) =>
+            (b.createdAt?.toMillis?.() ?? 0) - (a.createdAt?.toMillis?.() ?? 0),
+        )
+        setVehicles(list)
+        setVehiclesLoading(false)
+      },
+      () => {
+        setError('Vehicles could not be loaded. Check Firestore rules.')
+        setVehiclesLoading(false)
       },
     )
     return unsubscribe
@@ -316,6 +362,31 @@ function Dashboard({ admin }: { admin: User }) {
     }
   }
 
+  async function saveVehicle(e: React.FormEvent) {
+    e.preventDefault()
+    setIsSaving(true)
+    setError('')
+    try {
+      await addDoc(collection(db, 'vehicles'), {
+        plateNumber: newVehicle.plateNumber.toUpperCase(),
+        displayName: newVehicle.displayName,
+        type: newVehicle.type,
+        capacity: Number(newVehicle.capacity),
+        status: 'active',
+        assignedDriverId: null,
+        routeId: null,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      })
+      setIsAddingVehicle(false)
+      setNewVehicle({ plateNumber: '', displayName: '', type: 'van', capacity: 10 })
+    } catch {
+      setError('Failed to add the vehicle. Please try again.')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   return (
     <div className="admin-shell">
       <aside className={sidebarOpen ? 'sidebar open' : 'sidebar'}>
@@ -326,9 +397,12 @@ function Dashboard({ admin }: { admin: User }) {
           </button>
         </div>
         <nav>
-          <button className="nav-item active"><LayoutDashboard size={19} />Overview</button>
-          <button className="nav-item"><Users size={19} />People<span>{counts.pending}</span></button>
-          <button className="nav-item disabled"><BusFront size={19} />Vehicles<small>Soon</small></button>
+          <button className={`nav-item ${currentTab === 'overview' || currentTab === 'people' ? 'active' : ''}`} onClick={() => { setCurrentTab('overview'); setSidebarOpen(false); }}>
+            <LayoutDashboard size={19} />Overview
+          </button>
+          <button className={`nav-item ${currentTab === 'vehicles' ? 'active' : ''}`} onClick={() => { setCurrentTab('vehicles'); setSidebarOpen(false); }}>
+            <BusFront size={19} />Vehicles
+          </button>
           <button className="nav-item disabled"><Route size={19} />Routes<small>Soon</small></button>
         </nav>
         <div className="sidebar-foot">
@@ -355,122 +429,234 @@ function Dashboard({ admin }: { admin: User }) {
         </header>
 
         <div className="dashboard-content">
-          <section className="metric-grid" aria-label="Account summary">
-            <MetricCard label="Pending review" value={counts.pending} icon={<Clock3 />} tone="amber" />
-            <MetricCard label="Approved users" value={counts.approved} icon={<UserCheck />} tone="teal" />
-            <MetricCard label="Active drivers" value={counts.drivers} icon={<BusFront />} tone="blue" />
-            <MetricCard label="Total accounts" value={counts.all} icon={<Users />} tone="purple" />
-          </section>
+          {(currentTab === 'overview' || currentTab === 'people') && (
+            <>
+              <section className="metric-grid" aria-label="Account summary">
+                <MetricCard label="Pending review" value={counts.pending} icon={<Clock3 />} tone="amber" />
+                <MetricCard label="Approved users" value={counts.approved} icon={<UserCheck />} tone="teal" />
+                <MetricCard label="Active drivers" value={counts.drivers} icon={<BusFront />} tone="blue" />
+                <MetricCard label="Total accounts" value={counts.all} icon={<Users />} tone="purple" />
+              </section>
 
-          <section className="panel">
-            <div className="panel-heading">
-              <div>
-                <span className="eyebrow teal">Access management</span>
-                <h2>User registrations</h2>
-                <p>Review employee requests and assign their approved access.</p>
-              </div>
-              <div className="toolbar">
-                <div className="search-box">
-                  <Search size={18} />
-                  <input
-                    value={search}
-                    onChange={(event) => setSearch(event.target.value)}
-                    placeholder="Search name, ID or phone"
-                  />
+              <section className="panel">
+                <div className="panel-heading">
+                  <div>
+                    <span className="eyebrow teal">Access management</span>
+                    <h2>User registrations</h2>
+                    <p>Review employee requests and assign their approved access.</p>
+                  </div>
+                  <div className="toolbar">
+                    <div className="search-box">
+                      <Search size={18} />
+                      <input
+                        value={search}
+                        onChange={(event) => setSearch(event.target.value)}
+                        placeholder="Search name, ID or phone"
+                      />
+                    </div>
+                    <div className="select-wrap">
+                      <select value={filter} onChange={(event) => setFilter(event.target.value as Filter)}>
+                        <option value="all">All accounts</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="disabled">Disabled</option>
+                      </select>
+                      <ChevronDown size={16} />
+                    </div>
+                  </div>
                 </div>
-                <div className="select-wrap">
-                  <select value={filter} onChange={(event) => setFilter(event.target.value as Filter)}>
-                    <option value="all">All accounts</option>
-                    <option value="pending">Pending</option>
-                    <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option>
-                    <option value="disabled">Disabled</option>
-                  </select>
-                  <ChevronDown size={16} />
+
+                {error && <div className="alert table-alert"><XCircle size={18} />{error}</div>}
+
+                <div className="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Employee</th>
+                        <th>Requested access</th>
+                        <th>Contact</th>
+                        <th>Registered</th>
+                        <th>Status</th>
+                        <th><span className="sr-only">Actions</span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {visibleUsers.map((user) => (
+                        <tr key={user.id}>
+                          <td>
+                            <div className="person-cell">
+                              <div className="person-avatar">{initials(user.fullName)}</div>
+                              <div><strong>{user.fullName}</strong><span>ID {user.employeeId}</span></div>
+                            </div>
+                          </td>
+                          <td><span className={`role-pill ${user.requestedRole}`}><UserRound size={14} />{capitalize(user.requestedRole)}</span></td>
+                          <td><div className="contact-cell"><strong>{user.phone}</strong><span>{user.email || 'No email provided'}</span></div></td>
+                          <td>{formatDate(user.createdAt)}</td>
+                          <td><StatusBadge status={user.status} /></td>
+                          <td>
+                            {user.status === 'pending' ? (
+                              <div className="row-actions">
+                                <button
+                                  className="approve-button"
+                                  disabled={updatingId === user.id}
+                                  onClick={() => updateAccount(user, 'approved')}
+                                ><Check size={16} />Approve</button>
+                                <button
+                                  className="reject-button"
+                                  disabled={updatingId === user.id}
+                                  onClick={() => updateAccount(user, 'rejected')}
+                                  title="Reject"
+                                ><X size={17} /></button>
+                              </div>
+                            ) : user.status === 'approved' ? (
+                              <button
+                                className="change-decision-button reject"
+                                disabled={updatingId === user.id}
+                                onClick={() => updateAccount(user, 'rejected')}
+                              >
+                                <X size={15} />
+                                Change to rejected
+                              </button>
+                            ) : user.status === 'rejected' ? (
+                              <button
+                                className="change-decision-button approve"
+                                disabled={updatingId === user.id}
+                                onClick={() => updateAccount(user, 'approved')}
+                              >
+                                <Check size={15} />
+                                Approve instead
+                              </button>
+                            ) : (
+                              <span className="completed-action"><CheckCircle2 size={16} />Reviewed</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {!loading && visibleUsers.length === 0 && (
+                  <div className="empty-state">
+                    <UserCheck size={32} />
+                    <h3>No matching registrations</h3>
+                    <p>New registration requests will appear here automatically.</p>
+                  </div>
+                )}
+                {loading && <div className="loading-row"><RefreshCw className="spin" size={20} />Loading registrations…</div>}
+              </section>
+            </>
+          )}
+
+          {currentTab === 'vehicles' && (
+            <section className="panel">
+              <div className="panel-heading">
+                <div>
+                  <span className="eyebrow blue">Fleet management</span>
+                  <h2>Vehicles</h2>
+                  <p>Manage the company transport fleet and assignments.</p>
+                </div>
+                <div className="toolbar">
+                  <button className="primary-button small" onClick={() => setIsAddingVehicle(true)}>
+                    <Plus size={16} /> Add Vehicle
+                  </button>
                 </div>
               </div>
-            </div>
 
-            {error && <div className="alert table-alert"><XCircle size={18} />{error}</div>}
-
-            <div className="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Employee</th>
-                    <th>Requested access</th>
-                    <th>Contact</th>
-                    <th>Registered</th>
-                    <th>Status</th>
-                    <th><span className="sr-only">Actions</span></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {visibleUsers.map((user) => (
-                    <tr key={user.id}>
-                      <td>
-                        <div className="person-cell">
-                          <div className="person-avatar">{initials(user.fullName)}</div>
-                          <div><strong>{user.fullName}</strong><span>ID {user.employeeId}</span></div>
-                        </div>
-                      </td>
-                      <td><span className={`role-pill ${user.requestedRole}`}><UserRound size={14} />{capitalize(user.requestedRole)}</span></td>
-                      <td><div className="contact-cell"><strong>{user.phone}</strong><span>{user.email || 'No email provided'}</span></div></td>
-                      <td>{formatDate(user.createdAt)}</td>
-                      <td><StatusBadge status={user.status} /></td>
-                      <td>
-                        {user.status === 'pending' ? (
-                          <div className="row-actions">
-                            <button
-                              className="approve-button"
-                              disabled={updatingId === user.id}
-                              onClick={() => updateAccount(user, 'approved')}
-                            ><Check size={16} />Approve</button>
-                            <button
-                              className="reject-button"
-                              disabled={updatingId === user.id}
-                              onClick={() => updateAccount(user, 'rejected')}
-                              title="Reject"
-                            ><X size={17} /></button>
-                          </div>
-                        ) : user.status === 'approved' ? (
-                          <button
-                            className="change-decision-button reject"
-                            disabled={updatingId === user.id}
-                            onClick={() => updateAccount(user, 'rejected')}
-                          >
-                            <X size={15} />
-                            Change to rejected
-                          </button>
-                        ) : user.status === 'rejected' ? (
-                          <button
-                            className="change-decision-button approve"
-                            disabled={updatingId === user.id}
-                            onClick={() => updateAccount(user, 'approved')}
-                          >
-                            <Check size={15} />
-                            Approve instead
-                          </button>
-                        ) : (
-                          <span className="completed-action"><CheckCircle2 size={16} />Reviewed</span>
-                        )}
-                      </td>
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Plate Number</th>
+                      <th>Vehicle Details</th>
+                      <th>Capacity</th>
+                      <th>Status</th>
+                      <th><span className="sr-only">Actions</span></th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {!loading && visibleUsers.length === 0 && (
-              <div className="empty-state">
-                <UserCheck size={32} />
-                <h3>No matching registrations</h3>
-                <p>New registration requests will appear here automatically.</p>
+                  </thead>
+                  <tbody>
+                    {vehicles.map((vehicle) => (
+                      <tr key={vehicle.id}>
+                        <td>
+                          <div className="person-cell">
+                            <div className="person-avatar"><BusFront size={16} /></div>
+                            <div><strong>{vehicle.plateNumber}</strong></div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="contact-cell">
+                            <strong>{vehicle.displayName}</strong>
+                            <span>{capitalize(vehicle.type)}</span>
+                          </div>
+                        </td>
+                        <td>{vehicle.capacity} seats</td>
+                        <td><StatusBadge status={vehicle.status as any} /></td>
+                        <td>
+                          <div className="row-actions">
+                            <button className="change-decision-button approve">Edit</button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            )}
-            {loading && <div className="loading-row"><RefreshCw className="spin" size={20} />Loading registrations…</div>}
-          </section>
+
+              {!vehiclesLoading && vehicles.length === 0 && (
+                <div className="empty-state">
+                  <BusFront size={32} />
+                  <h3>No vehicles yet</h3>
+                  <p>There are no vehicles added to the fleet database.</p>
+                </div>
+              )}
+              {vehiclesLoading && <div className="loading-row"><RefreshCw className="spin" size={20} />Loading vehicles…</div>}
+            </section>
+          )}
         </div>
+
+        {isAddingVehicle && (
+          <div className="modal-backdrop" onClick={() => setIsAddingVehicle(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>Add New Vehicle</h3>
+                <button className="icon-button" onClick={() => setIsAddingVehicle(false)}><X size={20} /></button>
+              </div>
+              <form onSubmit={saveVehicle} className="modal-form">
+                <label>Plate Number</label>
+                <input required placeholder="e.g. NB-1234" value={newVehicle.plateNumber} onChange={(e) => setNewVehicle({ ...newVehicle, plateNumber: e.target.value })} />
+                
+                <label>Display Name</label>
+                <input required placeholder="e.g. Office Van 01" value={newVehicle.displayName} onChange={(e) => setNewVehicle({ ...newVehicle, displayName: e.target.value })} />
+                
+                <div className="input-row">
+                  <div className="input-group">
+                    <label>Type</label>
+                    <select value={newVehicle.type} onChange={(e) => setNewVehicle({ ...newVehicle, type: e.target.value })}>
+                      <option value="van">Van</option>
+                      <option value="bus">Bus</option>
+                      <option value="car">Car</option>
+                    </select>
+                  </div>
+                  <div className="input-group">
+                    <label>Capacity (Seats)</label>
+                    <input required type="number" min="1" max="60" value={newVehicle.capacity} onChange={(e) => setNewVehicle({ ...newVehicle, capacity: Number(e.target.value) })} />
+                  </div>
+                </div>
+
+                {error && <div className="alert table-alert" style={{ margin: 0 }}><XCircle size={18} />{error}</div>}
+
+                <div className="modal-actions">
+                  <button type="button" className="secondary-button" onClick={() => setIsAddingVehicle(false)}>Cancel</button>
+                  <button type="submit" className="primary-button small" disabled={isSaving}>
+                    {isSaving ? <RefreshCw className="spin" size={16} /> : <Check size={16} />}
+                    {isSaving ? 'Saving...' : 'Save Vehicle'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   )

@@ -1,37 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>Seriya Employment Transport Management System - Project Report</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; color: #243044; line-height: 1.45; margin: 54px; font-size: 11pt; }
-    h1 { color: #12355b; font-size: 24pt; margin: 0 0 12px; }
-    h2 { color: #12355b; font-size: 17pt; border-bottom: 2px solid #1e88e5; padding-bottom: 5px; margin-top: 28px; }
-    h3 { color: #175a8f; font-size: 13pt; margin-top: 20px; }
-    h4 { color: #243044; font-size: 11.5pt; margin-bottom: 5px; }
-    p { margin: 7px 0; }
-    ul, ol { margin-top: 6px; }
-    li { margin: 3px 0; }
-    table { width: 100%; border-collapse: collapse; margin: 12px 0 18px; }
-    th { background: #12355b; color: white; text-align: left; padding: 7px; border: 1px solid #9eabb8; }
-    td { vertical-align: top; padding: 7px; border: 1px solid #b9c3ce; }
-    tr:nth-child(even) td { background: #f4f7fa; }
-    .cover { text-align: center; padding-top: 110px; min-height: 650px; }
-    .cover .brand { color: #1e88e5; font-size: 42pt; font-weight: 700; letter-spacing: 1px; }
-    .cover .subtitle { color: #526273; font-size: 18pt; margin-top: 14px; }
-    .cover .meta { margin-top: 90px; font-size: 12pt; line-height: 1.8; }
-    .page-break { page-break-before: always; }
-    .callout { background: #eaf5ff; border-left: 5px solid #1e88e5; padding: 12px 15px; margin: 14px 0; }
-    .warning { background: #fff5df; border-left: 5px solid #e9a11b; padding: 12px 15px; margin: 14px 0; }
-    .small { font-size: 9.5pt; color: #526273; }
-    .center { text-align: center; }
-    .flow td { text-align: center; vertical-align: middle; font-weight: 600; background: #eaf5ff; }
-    .flow .arrow { width: 5%; color: #1e88e5; background: white; border: none; font-size: 18pt; }
-    .status { color: #147d64; font-weight: 700; }
-    .toc td { border: none; padding: 4px 2px; background: white; }
-    code { font-family: Menlo, Consolas, monospace; background: #f1f3f5; padding: 1px 4px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      color: #243044;
+      line-height: 1.45;
+      margin: 54px;
+      font-size: 11pt;
+    }
+
+    h1 {
+      color: #12355b;
+      font-size: 24pt;
+      margin: 0 0 12px;
+    }
+
+    h2 {
+      color: #12355b;
+      font-size: 17pt;
+      border-bottom: 2px solid #1e88e5;
+      padding-bottom: 5px;
+      margin-top: 28px;
+    }
+
+    h3 {
+      color: #175a8f;
+      font-size: 13pt;
+      margin-top: 20px;
+    }
+
+    h4 {
+      color: #243044;
+      font-size: 11.5pt;
+      margin-bottom: 5px;
+    }
+
+    p {
+      margin: 7px 0;
+    }
+
+    ul,
+    ol {
+      margin-top: 6px;
+    }
+
+    li {
+      margin: 3px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 18px;
+    }
+
+    th {
+      background: #12355b;
+      color: white;
+      text-align: left;
+      padding: 7px;
+      border: 1px solid #9eabb8;
+    }
+
+    td {
+      vertical-align: top;
+      padding: 7px;
+      border: 1px solid #b9c3ce;
+    }
+
+    tr:nth-child(even) td {
+      background: #f4f7fa;
+    }
+
+    .cover {
+      text-align: center;
+      padding-top: 110px;
+      min-height: 650px;
+    }
+
+    .cover .brand {
+      color: #1e88e5;
+      font-size: 42pt;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .cover .subtitle {
+      color: #526273;
+      font-size: 18pt;
+      margin-top: 14px;
+    }
+
+    .cover .meta {
+      margin-top: 90px;
+      font-size: 12pt;
+      line-height: 1.8;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .callout {
+      background: #eaf5ff;
+      border-left: 5px solid #1e88e5;
+      padding: 12px 15px;
+      margin: 14px 0;
+    }
+
+    .warning {
+      background: #fff5df;
+      border-left: 5px solid #e9a11b;
+      padding: 12px 15px;
+      margin: 14px 0;
+    }
+
+    .small {
+      font-size: 9.5pt;
+      color: #526273;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .flow td {
+      text-align: center;
+      vertical-align: middle;
+      font-weight: 600;
+      background: #eaf5ff;
+    }
+
+    .flow .arrow {
+      width: 5%;
+      color: #1e88e5;
+      background: white;
+      border: none;
+      font-size: 18pt;
+    }
+
+    .status {
+      color: #147d64;
+      font-weight: 700;
+    }
+
+    .toc td {
+      border: none;
+      padding: 4px 2px;
+      background: white;
+    }
+
+    code {
+      font-family: Menlo, Consolas, monospace;
+      background: #f1f3f5;
+      padding: 1px 4px;
+    }
   </style>
 </head>
+
 <body>
   <section class="cover">
     <div class="brand">SERIYA</div>
@@ -49,63 +179,155 @@
   <section class="page-break">
     <h2>Document Control</h2>
     <table>
-      <tr><th>Item</th><th>Details</th></tr>
-      <tr><td>Project name</td><td>Seriya Employment Transport Management System</td></tr>
-      <tr><td>Document purpose</td><td>Define the business need, proposed solution, user roles, functional requirements, architecture, data model, security requirements, implementation plan and acceptance criteria for the first release.</td></tr>
-      <tr><td>Primary users</td><td>Employee passengers, transport drivers and transport administrators.</td></tr>
-      <tr><td>Operating model</td><td>One morning inbound trip and one evening outbound trip for each operating day.</td></tr>
-      <tr><td>Target applications</td><td>One role-based Flutter mobile app for passengers and drivers, and a separate web-based administration dashboard.</td></tr>
-      <tr><td>Approval status</td><td>Draft for stakeholder review. Open requirements are listed in Section 19.</td></tr>
+      <tr>
+        <th>Item</th>
+        <th>Details</th>
+      </tr>
+      <tr>
+        <td>Project name</td>
+        <td>Seriya Employment Transport Management System</td>
+      </tr>
+      <tr>
+        <td>Document purpose</td>
+        <td>Define the business need, proposed solution, user roles, functional requirements, architecture, data model,
+          security requirements, implementation plan and acceptance criteria for the first release.</td>
+      </tr>
+      <tr>
+        <td>Primary users</td>
+        <td>Employee passengers, transport drivers and transport administrators.</td>
+      </tr>
+      <tr>
+        <td>Operating model</td>
+        <td>One morning inbound trip and one evening outbound trip for each operating day.</td>
+      </tr>
+      <tr>
+        <td>Target applications</td>
+        <td>One role-based Flutter mobile app for passengers and drivers, and a separate web-based administration
+          dashboard.</td>
+      </tr>
+      <tr>
+        <td>Approval status</td>
+        <td>Draft for stakeholder review. Open requirements are listed in Section 19.</td>
+      </tr>
     </table>
 
     <h2>Table of Contents</h2>
     <table class="toc">
-      <tr><td>Executive Summary</td></tr>
-      <tr><td>1. Introduction</td></tr>
-      <tr><td>2. Project Scope</td></tr>
-      <tr><td>3. Stakeholders and User Roles</td></tr>
-      <tr><td>4. Daily Transport Operating Model</td></tr>
-      <tr><td>5. Functional Requirements</td></tr>
-      <tr><td>6. Non-Functional Requirements</td></tr>
-      <tr><td>7. Proposed System Architecture</td></tr>
-      <tr><td>8. Data Model</td></tr>
-      <tr><td>9. Access Control Matrix</td></tr>
-      <tr><td>10. User Interface and Screen Specification</td></tr>
-      <tr><td>11. Location Tracking Design</td></tr>
-      <tr><td>12. Security and Privacy</td></tr>
-      <tr><td>13. Business Rules and Validation</td></tr>
-      <tr><td>14. Testing and Quality Assurance</td></tr>
-      <tr><td>15. Deployment and Operations</td></tr>
-      <tr><td>16. Implementation Roadmap</td></tr>
-      <tr><td>17. Risks and Mitigations</td></tr>
-      <tr><td>18. Future Enhancements</td></tr>
-      <tr><td>19. Open Decisions</td></tr>
-      <tr><td>20. MVP Acceptance Criteria</td></tr>
-      <tr><td>Conclusion, References and Glossary</td></tr>
+      <tr>
+        <td>Executive Summary</td>
+      </tr>
+      <tr>
+        <td>1. Introduction</td>
+      </tr>
+      <tr>
+        <td>2. Project Scope</td>
+      </tr>
+      <tr>
+        <td>3. Stakeholders and User Roles</td>
+      </tr>
+      <tr>
+        <td>4. Daily Transport Operating Model</td>
+      </tr>
+      <tr>
+        <td>5. Functional Requirements</td>
+      </tr>
+      <tr>
+        <td>6. Non-Functional Requirements</td>
+      </tr>
+      <tr>
+        <td>7. Proposed System Architecture</td>
+      </tr>
+      <tr>
+        <td>8. Data Model</td>
+      </tr>
+      <tr>
+        <td>9. Access Control Matrix</td>
+      </tr>
+      <tr>
+        <td>10. User Interface and Screen Specification</td>
+      </tr>
+      <tr>
+        <td>11. Location Tracking Design</td>
+      </tr>
+      <tr>
+        <td>12. Security and Privacy</td>
+      </tr>
+      <tr>
+        <td>13. Business Rules and Validation</td>
+      </tr>
+      <tr>
+        <td>14. Testing and Quality Assurance</td>
+      </tr>
+      <tr>
+        <td>15. Deployment and Operations</td>
+      </tr>
+      <tr>
+        <td>16. Implementation Roadmap</td>
+      </tr>
+      <tr>
+        <td>17. Risks and Mitigations</td>
+      </tr>
+      <tr>
+        <td>18. Future Enhancements</td>
+      </tr>
+      <tr>
+        <td>19. Open Decisions</td>
+      </tr>
+      <tr>
+        <td>20. MVP Acceptance Criteria</td>
+      </tr>
+      <tr>
+        <td>Conclusion, References and Glossary</td>
+      </tr>
     </table>
   </section>
 
   <section class="page-break">
     <h2>Executive Summary</h2>
-    <p>Seriya is a proposed employment transport management system designed to improve the reliability, visibility and coordination of daily employee transport. Many employment transport services depend on telephone calls, messaging groups and manual attendance lists. These methods make it difficult for passengers to know where their vehicle is, for drivers to know who is travelling and where to stop, and for administrators to monitor vehicles across multiple routes.</p>
-    <p>The proposed solution consists of a Flutter mobile application for employee passengers and drivers, supported by a separate web administration dashboard. Passengers will declare whether they are travelling, provide or confirm the relevant pickup or drop-off point, and view the latest available location of their assigned vehicle. Drivers will see the passengers expected for the current shift, their stop locations and their attendance status. Administrators will create routes, manage users and vehicles, control assignments, and track active vehicles from a central dashboard.</p>
+    <p>Seriya is a proposed employment transport management system designed to improve the reliability, visibility and
+      coordination of daily employee transport. Many employment transport services depend on telephone calls, messaging
+      groups and manual attendance lists. These methods make it difficult for passengers to know where their vehicle is,
+      for drivers to know who is travelling and where to stop, and for administrators to monitor vehicles across
+      multiple routes.</p>
+    <p>The proposed solution consists of a Flutter mobile application for employee passengers and drivers, supported by
+      a separate web administration dashboard. Passengers will declare whether they are travelling, provide or confirm
+      the relevant pickup or drop-off point, and view the latest available location of their assigned vehicle. Drivers
+      will see the passengers expected for the current shift, their stop locations and their attendance status.
+      Administrators will create routes, manage users and vehicles, control assignments, and track active vehicles from
+      a central dashboard.</p>
     <p>Every operating day contains two independently managed transport shifts:</p>
     <ul>
-      <li><strong>Morning inbound trip:</strong> the vehicle collects passengers from their approved pickup points and transports them to the office.</li>
-      <li><strong>Evening outbound trip:</strong> the vehicle collects passengers from the office and drops them at their approved destinations.</li>
+      <li><strong>Morning inbound trip:</strong> the vehicle collects passengers from their approved pickup points and
+        transports them to the office.</li>
+      <li><strong>Evening outbound trip:</strong> the vehicle collects passengers from the office and drops them at
+        their approved destinations.</li>
     </ul>
-    <p>Attendance and trip progress must be stored separately for the morning and evening shifts because a passenger may travel in only one direction on a given day. Vehicle location sharing is active only while a driver has started a trip, helping protect privacy and battery life. The first release will focus on core coordination and tracking, while route optimization, automated ETA calculation, payments, advanced reporting and other enhancements can be added later.</p>
-    <div class="callout"><strong>Expected outcome:</strong> Passengers receive better visibility and arrive on time, drivers receive a reliable shift-specific stop list, and administrators gain a real-time operational view of the transport fleet.</div>
+    <p>Attendance and trip progress must be stored separately for the morning and evening shifts because a passenger may
+      travel in only one direction on a given day. Vehicle location sharing is active only while a driver has started a
+      trip, helping protect privacy and battery life. The first release will focus on core coordination and tracking,
+      while route optimization, automated ETA calculation, payments, advanced reporting and other enhancements can be
+      added later.</p>
+    <div class="callout"><strong>Expected outcome:</strong> Passengers receive better visibility and arrive on time,
+      drivers receive a reliable shift-specific stop list, and administrators gain a real-time operational view of the
+      transport fleet.</div>
 
     <h2>1. Introduction</h2>
     <h3>1.1 Background</h3>
-    <p>Employee transport is a recurring operational service where a vehicle follows an assigned route to carry employees between approved locations and the workplace. The service depends on timely information: passengers need to know when the vehicle is approaching, drivers need an accurate list of expected passengers, and administrators need to know whether assigned vehicles are operating normally.</p>
+    <p>Employee transport is a recurring operational service where a vehicle follows an assigned route to carry
+      employees between approved locations and the workplace. The service depends on timely information: passengers need
+      to know when the vehicle is approaching, drivers need an accurate list of expected passengers, and administrators
+      need to know whether assigned vehicles are operating normally.</p>
 
     <h3>1.2 Problem Statement</h3>
-    <p>Without a shared digital system, daily transport coordination can produce uncertainty, delays and unnecessary communication. A driver may stop for a passenger who is absent, a passenger may miss a vehicle because its progress is unknown, and an administrator may only learn about a delay after receiving complaints. Pickup details may also be distributed across messages rather than maintained as controlled assignment data.</p>
+    <p>Without a shared digital system, daily transport coordination can produce uncertainty, delays and unnecessary
+      communication. A driver may stop for a passenger who is absent, a passenger may miss a vehicle because its
+      progress is unknown, and an administrator may only learn about a delay after receiving complaints. Pickup details
+      may also be distributed across messages rather than maintained as controlled assignment data.</p>
 
     <h3>1.3 Project Aim</h3>
-    <p>To design and implement a secure cross-platform system that coordinates employee attendance, passenger stops, driver trips, vehicle assignments and live vehicle visibility for morning and evening employment transport services.</p>
+    <p>To design and implement a secure cross-platform system that coordinates employee attendance, passenger stops,
+      driver trips, vehicle assignments and live vehicle visibility for morning and evening employment transport
+      services.</p>
 
     <h3>1.4 Objectives</h3>
     <ul>
@@ -124,16 +346,49 @@
     <h2>2. Project Scope</h2>
     <h3>2.1 In-Scope MVP Features</h3>
     <table>
-      <tr><th>Area</th><th>Included in the first release</th></tr>
-      <tr><td>Accounts</td><td>Self-registration, sign-in, password recovery, account status and administrator approval.</td></tr>
-      <tr><td>Roles</td><td>Passenger, driver and administrator permissions. Administrator access is never granted through public registration.</td></tr>
-      <tr><td>Assignments</td><td>Administrator-controlled passenger-to-route, passenger-to-vehicle, driver-to-vehicle and vehicle-to-route assignments.</td></tr>
-      <tr><td>Schedules</td><td>Daily morning inbound and evening outbound shifts, each represented as a separate trip.</td></tr>
-      <tr><td>Attendance</td><td>Passenger declarations and driver-confirmed pickup outcomes for each shift.</td></tr>
-      <tr><td>Stops</td><td>Approved morning pickup and evening drop-off points displayed on maps.</td></tr>
-      <tr><td>Tracking</td><td>Driver device publishes location during an active trip; assigned passengers and administrators can view it.</td></tr>
-      <tr><td>Administration</td><td>Web dashboard for routes, vehicles, users, assignments, trips, live monitoring and basic history.</td></tr>
-      <tr><td>Notifications</td><td>Essential account, attendance, trip-start and arrival-related alerts where feasible.</td></tr>
+      <tr>
+        <th>Area</th>
+        <th>Included in the first release</th>
+      </tr>
+      <tr>
+        <td>Accounts</td>
+        <td>Self-registration, sign-in, password recovery, account status and administrator approval.</td>
+      </tr>
+      <tr>
+        <td>Roles</td>
+        <td>Passenger, driver and administrator permissions. Administrator access is never granted through public
+          registration.</td>
+      </tr>
+      <tr>
+        <td>Assignments</td>
+        <td>Administrator-controlled passenger-to-route, passenger-to-vehicle, driver-to-vehicle and vehicle-to-route
+          assignments.</td>
+      </tr>
+      <tr>
+        <td>Schedules</td>
+        <td>Daily morning inbound and evening outbound shifts, each represented as a separate trip.</td>
+      </tr>
+      <tr>
+        <td>Attendance</td>
+        <td>Passenger declarations and driver-confirmed pickup outcomes for each shift.</td>
+      </tr>
+      <tr>
+        <td>Stops</td>
+        <td>Approved morning pickup and evening drop-off points displayed on maps.</td>
+      </tr>
+      <tr>
+        <td>Tracking</td>
+        <td>Driver device publishes location during an active trip; assigned passengers and administrators can view it.
+        </td>
+      </tr>
+      <tr>
+        <td>Administration</td>
+        <td>Web dashboard for routes, vehicles, users, assignments, trips, live monitoring and basic history.</td>
+      </tr>
+      <tr>
+        <td>Notifications</td>
+        <td>Essential account, attendance, trip-start and arrival-related alerts where feasible.</td>
+      </tr>
     </table>
 
     <h3>2.2 Out of Scope for the Initial MVP</h3>
@@ -155,18 +410,47 @@
       <li>Passengers normally use an assigned route and vehicle, but administrators can change assignments.</li>
       <li>The office is the common morning destination and evening origin for the initial deployment.</li>
       <li>The driver uses a GPS-capable Android or iOS phone with mobile data.</li>
-      <li>Maps and cloud services require internet connectivity, although limited cached data can support temporary disruptions.</li>
-      <li>Business-specific cutoff times, retention periods and escalation rules will be confirmed before production deployment.</li>
+      <li>Maps and cloud services require internet connectivity, although limited cached data can support temporary
+        disruptions.</li>
+      <li>Business-specific cutoff times, retention periods and escalation rules will be confirmed before production
+        deployment.</li>
     </ul>
 
     <h2>3. Stakeholders and User Roles</h2>
     <table>
-      <tr><th>Stakeholder</th><th>Primary needs</th><th>Responsibilities</th></tr>
-      <tr><td>Passenger / employee</td><td>Know the assigned service, declare travel plans, provide stop information and see the approaching vehicle.</td><td>Maintain accurate profile and stop details, submit attendance before the cutoff and use location information responsibly.</td></tr>
-      <tr><td>Driver</td><td>Know the assigned vehicle, current shift, expected passengers and ordered stop list.</td><td>Start/end the correct trip, safely operate tracking, confirm pickup outcomes and avoid interacting with the app while driving.</td></tr>
-      <tr><td>Transport administrator</td><td>Control assignments, monitor active trips and investigate service issues.</td><td>Approve roles, maintain master data, protect sensitive information and resolve assignment conflicts.</td></tr>
-      <tr><td>Company management</td><td>Reliable employee transport and appropriate operational reporting.</td><td>Approve policy, retention, privacy and service-level decisions.</td></tr>
-      <tr><td>System administrator / support</td><td>Healthy services, logs and recoverable data.</td><td>Manage environments, access, monitoring, backup and incident response.</td></tr>
+      <tr>
+        <th>Stakeholder</th>
+        <th>Primary needs</th>
+        <th>Responsibilities</th>
+      </tr>
+      <tr>
+        <td>Passenger / employee</td>
+        <td>Know the assigned service, declare travel plans, provide stop information and see the approaching vehicle.
+        </td>
+        <td>Maintain accurate profile and stop details, submit attendance before the cutoff and use location information
+          responsibly.</td>
+      </tr>
+      <tr>
+        <td>Driver</td>
+        <td>Know the assigned vehicle, current shift, expected passengers and ordered stop list.</td>
+        <td>Start/end the correct trip, safely operate tracking, confirm pickup outcomes and avoid interacting with the
+          app while driving.</td>
+      </tr>
+      <tr>
+        <td>Transport administrator</td>
+        <td>Control assignments, monitor active trips and investigate service issues.</td>
+        <td>Approve roles, maintain master data, protect sensitive information and resolve assignment conflicts.</td>
+      </tr>
+      <tr>
+        <td>Company management</td>
+        <td>Reliable employee transport and appropriate operational reporting.</td>
+        <td>Approve policy, retention, privacy and service-level decisions.</td>
+      </tr>
+      <tr>
+        <td>System administrator / support</td>
+        <td>Healthy services, logs and recoverable data.</td>
+        <td>Manage environments, access, monitoring, backup and incident response.</td>
+      </tr>
     </table>
   </section>
 
@@ -174,23 +458,52 @@
     <h2>4. Daily Transport Operating Model</h2>
     <h3>4.1 Trip Types</h3>
     <table>
-      <tr><th>Trip</th><th>Origin and destination</th><th>Passenger location used</th><th>Attendance record</th></tr>
-      <tr><td>Morning inbound</td><td>Approved passenger pickup points to the office.</td><td>Morning pickup point.</td><td>Morning attendance for that operating date.</td></tr>
-      <tr><td>Evening outbound</td><td>The office to approved passenger drop-off points.</td><td>Evening drop-off point, which may match the morning point.</td><td>Evening attendance for that operating date.</td></tr>
+      <tr>
+        <th>Trip</th>
+        <th>Origin and destination</th>
+        <th>Passenger location used</th>
+        <th>Attendance record</th>
+      </tr>
+      <tr>
+        <td>Morning inbound</td>
+        <td>Approved passenger pickup points to the office.</td>
+        <td>Morning pickup point.</td>
+        <td>Morning attendance for that operating date.</td>
+      </tr>
+      <tr>
+        <td>Evening outbound</td>
+        <td>The office to approved passenger drop-off points.</td>
+        <td>Evening drop-off point, which may match the morning point.</td>
+        <td>Evening attendance for that operating date.</td>
+      </tr>
     </table>
 
-    <div class="warning"><strong>Important:</strong> Morning and evening attendance must never be treated as one combined daily value. An employee may arrive independently but use company transport in the evening, or use morning transport and leave by another method.</div>
+    <div class="warning"><strong>Important:</strong> Morning and evening attendance must never be treated as one
+      combined daily value. An employee may arrive independently but use company transport in the evening, or use
+      morning transport and leave by another method.</div>
 
     <h3>4.2 Standard Daily Lifecycle</h3>
     <table class="flow">
       <tr>
-        <td>Trips scheduled</td><td class="arrow">→</td><td>Passengers submit attendance</td><td class="arrow">→</td><td>Driver reviews stops</td>
+        <td>Trips scheduled</td>
+        <td class="arrow">→</td>
+        <td>Passengers submit attendance</td>
+        <td class="arrow">→</td>
+        <td>Driver reviews stops</td>
       </tr>
       <tr>
-        <td>Driver starts trip</td><td class="arrow">→</td><td>Live location published</td><td class="arrow">→</td><td>Pickups/drop-offs recorded</td>
+        <td>Driver starts trip</td>
+        <td class="arrow">→</td>
+        <td>Live location published</td>
+        <td class="arrow">→</td>
+        <td>Pickups/drop-offs recorded</td>
       </tr>
       <tr>
-        <td>Driver ends trip</td><td class="arrow">→</td><td>Tracking stops</td><td class="arrow">→</td><td>Trip retained in history</td>
+        <td>Driver ends trip</td>
+        <td class="arrow">→</td>
+        <td>Tracking stops</td>
+        <td class="arrow">→</td>
+        <td>Trip retained in history</td>
       </tr>
     </table>
 
@@ -217,119 +530,425 @@
 
     <h3>4.5 Trip States</h3>
     <p><code>scheduled</code> → <code>ready</code> → <code>active</code> → <code>completed</code></p>
-    <p>Exception states may include <code>cancelled</code> and <code>interrupted</code>. Every state change should store the actor and timestamp for audit purposes.</p>
+    <p>Exception states may include <code>cancelled</code> and <code>interrupted</code>. Every state change should store
+      the actor and timestamp for audit purposes.</p>
   </section>
 
   <section class="page-break">
     <h2>5. Functional Requirements</h2>
     <h3>5.1 Authentication and Account Management</h3>
     <table>
-      <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
-      <tr><td>FR-A01</td><td>The system shall allow a person to register using approved identity fields such as name, email and phone number.</td><td>Must</td></tr>
-      <tr><td>FR-A02</td><td>A newly registered account shall remain pending until approved according to company policy.</td><td>Must</td></tr>
-      <tr><td>FR-A03</td><td>The system shall support sign-in, sign-out and password recovery.</td><td>Must</td></tr>
-      <tr><td>FR-A04</td><td>The administrator shall approve, reject, disable or reactivate accounts.</td><td>Must</td></tr>
-      <tr><td>FR-A05</td><td>Only an authorized administrator shall grant driver or administrator privileges.</td><td>Must</td></tr>
-      <tr><td>FR-A06</td><td>The mobile app shall display the correct interface based on the authenticated user's approved role.</td><td>Must</td></tr>
-      <tr><td>FR-A07</td><td>Users shall be able to view and update permitted profile fields.</td><td>Should</td></tr>
-      <tr><td>FR-A08</td><td>Security-sensitive role and assignment changes shall be logged.</td><td>Must</td></tr>
+      <tr>
+        <th>ID</th>
+        <th>Requirement</th>
+        <th>Priority</th>
+      </tr>
+      <tr>
+        <td>FR-A01</td>
+        <td>The system shall allow a person to register using approved identity fields such as name, email and phone
+          number.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-A02</td>
+        <td>A newly registered account shall remain pending until approved according to company policy.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-A03</td>
+        <td>The system shall support sign-in, sign-out and password recovery.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-A04</td>
+        <td>The administrator shall approve, reject, disable or reactivate accounts.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-A05</td>
+        <td>Only an authorized administrator shall grant driver or administrator privileges.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-A06</td>
+        <td>The mobile app shall display the correct interface based on the authenticated user's approved role.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-A07</td>
+        <td>Users shall be able to view and update permitted profile fields.</td>
+        <td>Should</td>
+      </tr>
+      <tr>
+        <td>FR-A08</td>
+        <td>Security-sensitive role and assignment changes shall be logged.</td>
+        <td>Must</td>
+      </tr>
     </table>
 
     <h3>5.2 Passenger Requirements</h3>
     <table>
-      <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
-      <tr><td>FR-P01</td><td>A passenger shall view the assigned route, vehicle and available driver information.</td><td>Must</td></tr>
-      <tr><td>FR-P02</td><td>A passenger shall submit morning attendance independently of evening attendance.</td><td>Must</td></tr>
-      <tr><td>FR-P03</td><td>Attendance options shall include at minimum Travelling and Not travelling.</td><td>Must</td></tr>
-      <tr><td>FR-P04</td><td>The app shall display submission status and the applicable cutoff time.</td><td>Must</td></tr>
-      <tr><td>FR-P05</td><td>A passenger shall propose or update a map-based pickup/drop-off location, subject to administrator approval if required.</td><td>Must</td></tr>
-      <tr><td>FR-P06</td><td>A passenger shall view the latest available location of the assigned vehicle only during an authorized active trip.</td><td>Must</td></tr>
-      <tr><td>FR-P07</td><td>The map shall show when the vehicle location was last updated and indicate stale data.</td><td>Must</td></tr>
-      <tr><td>FR-P08</td><td>A passenger shall view the current trip state and relevant service messages.</td><td>Must</td></tr>
-      <tr><td>FR-P09</td><td>The system should notify passengers when the assigned trip starts and when the vehicle is approaching, subject to notification permission and later geofence/ETA design.</td><td>Should</td></tr>
-      <tr><td>FR-P10</td><td>A passenger shall be prevented from viewing unrelated routes, vehicles or employee stop locations.</td><td>Must</td></tr>
+      <tr>
+        <th>ID</th>
+        <th>Requirement</th>
+        <th>Priority</th>
+      </tr>
+      <tr>
+        <td>FR-P01</td>
+        <td>A passenger shall view the assigned route, vehicle and available driver information.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-P02</td>
+        <td>A passenger shall submit morning attendance independently of evening attendance.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-P03</td>
+        <td>Attendance options shall include at minimum Travelling and Not travelling.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-P04</td>
+        <td>The app shall display submission status and the applicable cutoff time.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-P05</td>
+        <td>A passenger shall propose or update a map-based pickup/drop-off location, subject to administrator approval
+          if required.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-P06</td>
+        <td>A passenger shall view the latest available location of the assigned vehicle only during an authorized
+          active trip.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-P07</td>
+        <td>The map shall show when the vehicle location was last updated and indicate stale data.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-P08</td>
+        <td>A passenger shall view the current trip state and relevant service messages.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-P09</td>
+        <td>The system should notify passengers when the assigned trip starts and when the vehicle is approaching,
+          subject to notification permission and later geofence/ETA design.</td>
+        <td>Should</td>
+      </tr>
+      <tr>
+        <td>FR-P10</td>
+        <td>A passenger shall be prevented from viewing unrelated routes, vehicles or employee stop locations.</td>
+        <td>Must</td>
+      </tr>
     </table>
 
     <h3>5.3 Driver Requirements</h3>
     <table>
-      <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
-      <tr><td>FR-D01</td><td>A driver shall view the assigned vehicle, route and next scheduled shift.</td><td>Must</td></tr>
-      <tr><td>FR-D02</td><td>A driver shall view the passenger list and relevant stops for the selected morning or evening trip.</td><td>Must</td></tr>
-      <tr><td>FR-D03</td><td>The list shall distinguish travelling, not travelling, no response, picked up and absent/no-show states.</td><td>Must</td></tr>
-      <tr><td>FR-D04</td><td>A driver shall start only an assigned, valid trip.</td><td>Must</td></tr>
-      <tr><td>FR-D05</td><td>Starting a trip shall enable authorized location publishing after permissions are confirmed.</td><td>Must</td></tr>
-      <tr><td>FR-D06</td><td>A driver shall update passenger pickup/drop-off outcomes using a low-distraction interface.</td><td>Must</td></tr>
-      <tr><td>FR-D07</td><td>A driver shall end the active trip, causing continuous location publishing to stop.</td><td>Must</td></tr>
-      <tr><td>FR-D08</td><td>The app shall clearly indicate GPS, network and location-sharing status.</td><td>Must</td></tr>
-      <tr><td>FR-D09</td><td>The driver shall be warned before starting an evening trip if an earlier morning trip remains active, and vice versa.</td><td>Should</td></tr>
-      <tr><td>FR-D10</td><td>The app should preserve essential trip and stop information during temporary connectivity loss and synchronize safely when connectivity returns.</td><td>Should</td></tr>
+      <tr>
+        <th>ID</th>
+        <th>Requirement</th>
+        <th>Priority</th>
+      </tr>
+      <tr>
+        <td>FR-D01</td>
+        <td>A driver shall view the assigned vehicle, route and next scheduled shift.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-D02</td>
+        <td>A driver shall view the passenger list and relevant stops for the selected morning or evening trip.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-D03</td>
+        <td>The list shall distinguish travelling, not travelling, no response, picked up and absent/no-show states.
+        </td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-D04</td>
+        <td>A driver shall start only an assigned, valid trip.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-D05</td>
+        <td>Starting a trip shall enable authorized location publishing after permissions are confirmed.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-D06</td>
+        <td>A driver shall update passenger pickup/drop-off outcomes using a low-distraction interface.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-D07</td>
+        <td>A driver shall end the active trip, causing continuous location publishing to stop.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-D08</td>
+        <td>The app shall clearly indicate GPS, network and location-sharing status.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-D09</td>
+        <td>The driver shall be warned before starting an evening trip if an earlier morning trip remains active, and
+          vice versa.</td>
+        <td>Should</td>
+      </tr>
+      <tr>
+        <td>FR-D10</td>
+        <td>The app should preserve essential trip and stop information during temporary connectivity loss and
+          synchronize safely when connectivity returns.</td>
+        <td>Should</td>
+      </tr>
     </table>
 
     <h3>5.4 Administrator Requirements</h3>
     <table>
-      <tr><th>ID</th><th>Requirement</th><th>Priority</th></tr>
-      <tr><td>FR-M01</td><td>The administrator shall manage passenger, driver and administrator accounts.</td><td>Must</td></tr>
-      <tr><td>FR-M02</td><td>The administrator shall create, update, disable and search vehicles.</td><td>Must</td></tr>
-      <tr><td>FR-M03</td><td>The administrator shall create and manage routes, office locations and stop points.</td><td>Must</td></tr>
-      <tr><td>FR-M04</td><td>The administrator shall assign passengers to routes/vehicles and drivers to vehicles.</td><td>Must</td></tr>
-      <tr><td>FR-M05</td><td>The administrator shall view all active authorized vehicles on one map.</td><td>Must</td></tr>
-      <tr><td>FR-M06</td><td>The dashboard shall display trip type, driver, route, last update time and tracking status.</td><td>Must</td></tr>
-      <tr><td>FR-M07</td><td>The administrator shall view morning and evening attendance separately.</td><td>Must</td></tr>
-      <tr><td>FR-M08</td><td>The administrator shall review completed, cancelled and interrupted trip history.</td><td>Should</td></tr>
-      <tr><td>FR-M09</td><td>The system shall prevent conflicting active driver/vehicle assignments.</td><td>Must</td></tr>
-      <tr><td>FR-M10</td><td>The dashboard should export basic attendance or trip summaries subject to approved privacy policy.</td><td>Could</td></tr>
+      <tr>
+        <th>ID</th>
+        <th>Requirement</th>
+        <th>Priority</th>
+      </tr>
+      <tr>
+        <td>FR-M01</td>
+        <td>The administrator shall manage passenger, driver and administrator accounts.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-M02</td>
+        <td>The administrator shall create, update, disable and search vehicles.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-M03</td>
+        <td>The administrator shall create and manage routes, office locations and stop points.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-M04</td>
+        <td>The administrator shall assign passengers to routes/vehicles and drivers to vehicles.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-M05</td>
+        <td>The administrator shall view all active authorized vehicles on one map.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-M06</td>
+        <td>The dashboard shall display trip type, driver, route, last update time and tracking status.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-M07</td>
+        <td>The administrator shall view morning and evening attendance separately.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-M08</td>
+        <td>The administrator shall review completed, cancelled and interrupted trip history.</td>
+        <td>Should</td>
+      </tr>
+      <tr>
+        <td>FR-M09</td>
+        <td>The system shall prevent conflicting active driver/vehicle assignments.</td>
+        <td>Must</td>
+      </tr>
+      <tr>
+        <td>FR-M10</td>
+        <td>The dashboard should export basic attendance or trip summaries subject to approved privacy policy.</td>
+        <td>Could</td>
+      </tr>
     </table>
   </section>
 
   <section class="page-break">
     <h2>6. Non-Functional Requirements</h2>
     <table>
-      <tr><th>Category</th><th>Requirement</th></tr>
-      <tr><td>Performance</td><td>Common screens should become usable promptly under normal mobile conditions. Location updates should appear with a configurable operational interval, initially targeted around 5–15 seconds during active trips, while balancing battery use and service cost.</td></tr>
-      <tr><td>Location honesty</td><td>The application shall describe vehicle position as the latest available GPS/network location rather than guarantee an “exact” location. Accuracy and freshness depend on device, environment and connectivity.</td></tr>
-      <tr><td>Availability</td><td>Core cloud services should be selected and monitored for production reliability. Temporary service failures must produce understandable messages and recover safely.</td></tr>
-      <tr><td>Security</td><td>All access shall require authentication. Authorization shall be enforced in backend/database rules, not only by hiding interface elements.</td></tr>
-      <tr><td>Privacy</td><td>Trip-bound location collection, data minimization, purpose limitation, restricted audience and an approved retention policy are required.</td></tr>
-      <tr><td>Usability</td><td>Driver interactions shall use large targets, minimal typing and clear states. The application shall discourage interaction while the vehicle is moving.</td></tr>
-      <tr><td>Accessibility</td><td>Interfaces should support readable contrast, scalable text, screen-reader labels and non-colour status indicators.</td></tr>
-      <tr><td>Compatibility</td><td>The mobile application shall support approved Android and iOS versions. The admin dashboard shall support current mainstream desktop browsers.</td></tr>
-      <tr><td>Scalability</td><td>Data paths and queries shall avoid loading the entire fleet or all historical locations when only an assigned route or active trip is required.</td></tr>
-      <tr><td>Maintainability</td><td>The codebase shall separate presentation, application logic and data access, use automated analysis/tests and maintain environment-specific configuration.</td></tr>
-      <tr><td>Auditability</td><td>Role, assignment and trip lifecycle changes shall retain actor and timestamp information.</td></tr>
-      <tr><td>Localization</td><td>The interface architecture should permit future English, Sinhala and Tamil translations without redesign.</td></tr>
+      <tr>
+        <th>Category</th>
+        <th>Requirement</th>
+      </tr>
+      <tr>
+        <td>Performance</td>
+        <td>Common screens should become usable promptly under normal mobile conditions. Location updates should appear
+          with a configurable operational interval, initially targeted around 5–15 seconds during active trips, while
+          balancing battery use and service cost.</td>
+      </tr>
+      <tr>
+        <td>Location honesty</td>
+        <td>The application shall describe vehicle position as the latest available GPS/network location rather than
+          guarantee an “exact” location. Accuracy and freshness depend on device, environment and connectivity.</td>
+      </tr>
+      <tr>
+        <td>Availability</td>
+        <td>Core cloud services should be selected and monitored for production reliability. Temporary service failures
+          must produce understandable messages and recover safely.</td>
+      </tr>
+      <tr>
+        <td>Security</td>
+        <td>All access shall require authentication. Authorization shall be enforced in backend/database rules, not only
+          by hiding interface elements.</td>
+      </tr>
+      <tr>
+        <td>Privacy</td>
+        <td>Trip-bound location collection, data minimization, purpose limitation, restricted audience and an approved
+          retention policy are required.</td>
+      </tr>
+      <tr>
+        <td>Usability</td>
+        <td>Driver interactions shall use large targets, minimal typing and clear states. The application shall
+          discourage interaction while the vehicle is moving.</td>
+      </tr>
+      <tr>
+        <td>Accessibility</td>
+        <td>Interfaces should support readable contrast, scalable text, screen-reader labels and non-colour status
+          indicators.</td>
+      </tr>
+      <tr>
+        <td>Compatibility</td>
+        <td>The mobile application shall support approved Android and iOS versions. The admin dashboard shall support
+          current mainstream desktop browsers.</td>
+      </tr>
+      <tr>
+        <td>Scalability</td>
+        <td>Data paths and queries shall avoid loading the entire fleet or all historical locations when only an
+          assigned route or active trip is required.</td>
+      </tr>
+      <tr>
+        <td>Maintainability</td>
+        <td>The codebase shall separate presentation, application logic and data access, use automated analysis/tests
+          and maintain environment-specific configuration.</td>
+      </tr>
+      <tr>
+        <td>Auditability</td>
+        <td>Role, assignment and trip lifecycle changes shall retain actor and timestamp information.</td>
+      </tr>
+      <tr>
+        <td>Localization</td>
+        <td>The interface architecture should permit future English, Sinhala and Tamil translations without redesign.
+        </td>
+      </tr>
     </table>
 
     <h2>7. Proposed System Architecture</h2>
     <h3>7.1 Logical Architecture</h3>
     <table class="flow">
-      <tr><td>Passenger Flutter App</td><td class="arrow">↔</td><td>Authentication + Application Services</td><td class="arrow">↔</td><td>Operational Database</td></tr>
-      <tr><td>Driver Flutter App</td><td class="arrow">↔</td><td>Realtime Location Service</td><td class="arrow">↔</td><td>Live Vehicle Locations</td></tr>
-      <tr><td>Flutter Web Admin</td><td class="arrow">↔</td><td>Cloud Functions / API</td><td class="arrow">↔</td><td>Notifications + Audit</td></tr>
+      <tr>
+        <td>Passenger Flutter App</td>
+        <td class="arrow">↔</td>
+        <td>Authentication + Application Services</td>
+        <td class="arrow">↔</td>
+        <td>Operational Database</td>
+      </tr>
+      <tr>
+        <td>Driver Flutter App</td>
+        <td class="arrow">↔</td>
+        <td>Realtime Location Service</td>
+        <td class="arrow">↔</td>
+        <td>Live Vehicle Locations</td>
+      </tr>
+      <tr>
+        <td>Flutter Web Admin</td>
+        <td class="arrow">↔</td>
+        <td>Cloud Functions / API</td>
+        <td class="arrow">↔</td>
+        <td>Notifications + Audit</td>
+      </tr>
     </table>
 
     <h3>7.2 Recommended Technology Stack</h3>
     <table>
-      <tr><th>Layer</th><th>Recommended technology</th><th>Reason</th></tr>
-      <tr><td>Passenger and driver app</td><td>Flutter and Dart</td><td>One codebase for Android and iOS with role-based screens and strong map/plugin support.</td></tr>
-      <tr><td>Admin dashboard</td><td>Flutter Web</td><td>Reuses Dart/Flutter knowledge and can share models, validation and design elements where appropriate.</td></tr>
-      <tr><td>Identity</td><td>Firebase Authentication</td><td>Managed identity and common sign-in/recovery workflows. Business roles remain separate application data or secured claims.</td></tr>
-      <tr><td>Business data</td><td>Cloud Firestore</td><td>Suitable for users, assignments, routes, trips, attendance and auditable documents with real-time listeners.</td></tr>
-      <tr><td>Live positions</td><td>Firebase Realtime Database</td><td>Well suited to small, frequently changing location records and real-time listeners when paths are carefully scoped.</td></tr>
-      <tr><td>Privileged logic</td><td>Cloud Functions or a dedicated backend API</td><td>Validates privileged assignment, notification and lifecycle operations outside untrusted clients.</td></tr>
-      <tr><td>Maps</td><td>Google Maps for Flutter / Maps JavaScript support as appropriate</td><td>Displays vehicle and stop markers. Requires billing, API keys and platform-specific configuration.</td></tr>
-      <tr><td>Notifications</td><td>Firebase Cloud Messaging</td><td>Supports trip and service notifications on mobile platforms.</td></tr>
-      <tr><td>Monitoring</td><td>Crash reporting, application logs and performance monitoring</td><td>Supports production diagnosis without exposing sensitive location information in logs.</td></tr>
+      <tr>
+        <th>Layer</th>
+        <th>Recommended technology</th>
+        <th>Reason</th>
+      </tr>
+      <tr>
+        <td>Passenger and driver app</td>
+        <td>Flutter and Dart</td>
+        <td>One codebase for Android and iOS with role-based screens and strong map/plugin support.</td>
+      </tr>
+      <tr>
+        <td>Admin dashboard</td>
+        <td>Flutter Web</td>
+        <td>Reuses Dart/Flutter knowledge and can share models, validation and design elements where appropriate.</td>
+      </tr>
+      <tr>
+        <td>Identity</td>
+        <td>Firebase Authentication</td>
+        <td>Managed identity and common sign-in/recovery workflows. Business roles remain separate application data or
+          secured claims.</td>
+      </tr>
+      <tr>
+        <td>Business data</td>
+        <td>Cloud Firestore</td>
+        <td>Suitable for users, assignments, routes, trips, attendance and auditable documents with real-time listeners.
+        </td>
+      </tr>
+      <tr>
+        <td>Live positions</td>
+        <td>Firebase Realtime Database</td>
+        <td>Well suited to small, frequently changing location records and real-time listeners when paths are carefully
+          scoped.</td>
+      </tr>
+      <tr>
+        <td>Privileged logic</td>
+        <td>Cloud Functions or a dedicated backend API</td>
+        <td>Validates privileged assignment, notification and lifecycle operations outside untrusted clients.</td>
+      </tr>
+      <tr>
+        <td>Maps</td>
+        <td>Google Maps for Flutter / Maps JavaScript support as appropriate</td>
+        <td>Displays vehicle and stop markers. Requires billing, API keys and platform-specific configuration.</td>
+      </tr>
+      <tr>
+        <td>Notifications</td>
+        <td>Firebase Cloud Messaging</td>
+        <td>Supports trip and service notifications on mobile platforms.</td>
+      </tr>
+      <tr>
+        <td>Monitoring</td>
+        <td>Crash reporting, application logs and performance monitoring</td>
+        <td>Supports production diagnosis without exposing sensitive location information in logs.</td>
+      </tr>
     </table>
 
     <h3>7.3 Mobile Code Organization</h3>
     <p>A feature-oriented structure is recommended:</p>
     <table>
-      <tr><th>Area</th><th>Examples</th></tr>
-      <tr><td>Core</td><td>Theme, routing, error handling, shared configuration and common widgets.</td></tr>
-      <tr><td>Authentication</td><td>Registration, login, approval state and session handling.</td></tr>
-      <tr><td>Passenger</td><td>Dashboard, attendance, assigned trip, stop editor and vehicle map.</td></tr>
-      <tr><td>Driver</td><td>Shift selection, passenger list, trip controls, stop map and tracking service.</td></tr>
-      <tr><td>Data</td><td>Models, repositories, Firebase adapters and local cache.</td></tr>
+      <tr>
+        <th>Area</th>
+        <th>Examples</th>
+      </tr>
+      <tr>
+        <td>Core</td>
+        <td>Theme, routing, error handling, shared configuration and common widgets.</td>
+      </tr>
+      <tr>
+        <td>Authentication</td>
+        <td>Registration, login, approval state and session handling.</td>
+      </tr>
+      <tr>
+        <td>Passenger</td>
+        <td>Dashboard, attendance, assigned trip, stop editor and vehicle map.</td>
+      </tr>
+      <tr>
+        <td>Driver</td>
+        <td>Shift selection, passenger list, trip controls, stop map and tracking service.</td>
+      </tr>
+      <tr>
+        <td>Data</td>
+        <td>Models, repositories, Firebase adapters and local cache.</td>
+      </tr>
     </table>
   </section>
 
@@ -337,18 +956,66 @@
     <h2>8. Data Model</h2>
     <h3>8.1 Core Entities</h3>
     <table>
-      <tr><th>Entity</th><th>Important fields</th><th>Purpose</th></tr>
-      <tr><td>User</td><td>userId, name, email, phone, role, accountStatus, createdAt, updatedAt</td><td>Stores identity-linked application profile and authorization state.</td></tr>
-      <tr><td>Passenger profile</td><td>userId, employeeNumber, routeId, vehicleId, morningStopId, eveningStopId</td><td>Stores passenger-specific transport assignment.</td></tr>
-      <tr><td>Driver profile</td><td>userId, licence/reference fields if required, assignedVehicleId, status</td><td>Stores approved driver information.</td></tr>
-      <tr><td>Vehicle</td><td>vehicleId, registrationNumber, displayName, capacity, status, routeId</td><td>Represents a transport vehicle.</td></tr>
-      <tr><td>Route</td><td>routeId, name, officeLocationId, status, orderedStopIds</td><td>Defines the service corridor and stop sequence.</td></tr>
-      <tr><td>Stop</td><td>stopId, label, latitude, longitude, address, approvalStatus</td><td>Represents an approved pickup or drop-off point.</td></tr>
-      <tr><td>Trip</td><td>tripId, serviceDate, shiftType, vehicleId, driverId, routeId, status, scheduledAt, startedAt, endedAt</td><td>Represents one morning or one evening execution of a route.</td></tr>
-      <tr><td>Trip passenger</td><td>tripId, passengerId, stopId, declaredAttendance, operationalStatus, timestamps</td><td>Captures the passenger's plan and actual outcome for one shift.</td></tr>
-      <tr><td>Live location</td><td>vehicleId/tripId, latitude, longitude, accuracy, heading, speed, recordedAt, serverReceivedAt</td><td>Stores the latest authorized vehicle position.</td></tr>
-      <tr><td>Assignment history</td><td>assignmentId, entity IDs, effectiveFrom, effectiveTo, changedBy, changedAt</td><td>Supports traceable changes rather than silently overwriting history.</td></tr>
-      <tr><td>Audit event</td><td>eventId, actorId, action, targetType, targetId, timestamp, safe metadata</td><td>Records privileged changes and relevant operational events.</td></tr>
+      <tr>
+        <th>Entity</th>
+        <th>Important fields</th>
+        <th>Purpose</th>
+      </tr>
+      <tr>
+        <td>User</td>
+        <td>userId, name, email, phone, role, accountStatus, createdAt, updatedAt</td>
+        <td>Stores identity-linked application profile and authorization state.</td>
+      </tr>
+      <tr>
+        <td>Passenger profile</td>
+        <td>userId, employeeNumber, routeId, vehicleId, morningStopId, eveningStopId</td>
+        <td>Stores passenger-specific transport assignment.</td>
+      </tr>
+      <tr>
+        <td>Driver profile</td>
+        <td>userId, licence/reference fields if required, assignedVehicleId, status</td>
+        <td>Stores approved driver information.</td>
+      </tr>
+      <tr>
+        <td>Vehicle</td>
+        <td>vehicleId, registrationNumber, displayName, capacity, status, routeId</td>
+        <td>Represents a transport vehicle.</td>
+      </tr>
+      <tr>
+        <td>Route</td>
+        <td>routeId, name, officeLocationId, status, orderedStopIds</td>
+        <td>Defines the service corridor and stop sequence.</td>
+      </tr>
+      <tr>
+        <td>Stop</td>
+        <td>stopId, label, latitude, longitude, address, approvalStatus</td>
+        <td>Represents an approved pickup or drop-off point.</td>
+      </tr>
+      <tr>
+        <td>Trip</td>
+        <td>tripId, serviceDate, shiftType, vehicleId, driverId, routeId, status, scheduledAt, startedAt, endedAt</td>
+        <td>Represents one morning or one evening execution of a route.</td>
+      </tr>
+      <tr>
+        <td>Trip passenger</td>
+        <td>tripId, passengerId, stopId, declaredAttendance, operationalStatus, timestamps</td>
+        <td>Captures the passenger's plan and actual outcome for one shift.</td>
+      </tr>
+      <tr>
+        <td>Live location</td>
+        <td>vehicleId/tripId, latitude, longitude, accuracy, heading, speed, recordedAt, serverReceivedAt</td>
+        <td>Stores the latest authorized vehicle position.</td>
+      </tr>
+      <tr>
+        <td>Assignment history</td>
+        <td>assignmentId, entity IDs, effectiveFrom, effectiveTo, changedBy, changedAt</td>
+        <td>Supports traceable changes rather than silently overwriting history.</td>
+      </tr>
+      <tr>
+        <td>Audit event</td>
+        <td>eventId, actorId, action, targetType, targetId, timestamp, safe metadata</td>
+        <td>Records privileged changes and relevant operational events.</td>
+      </tr>
     </table>
 
     <h3>8.2 Key Relationships</h3>
@@ -359,32 +1026,96 @@
       <li>A passenger is assigned to a route/vehicle and approved morning/evening stops.</li>
       <li>Each service date produces a morning trip and an evening trip where scheduled.</li>
       <li>Each trip has many trip-passenger records, even when a passenger declares absence.</li>
-      <li>Each active trip has one latest-location record and may optionally have a limited history subject to policy.</li>
+      <li>Each active trip has one latest-location record and may optionally have a limited history subject to policy.
+      </li>
     </ul>
 
     <h3>8.3 Attendance Model</h3>
     <p>Passenger intention and actual transport outcome should be separate fields:</p>
     <table>
-      <tr><th>Field</th><th>Possible values</th><th>Recorded by</th></tr>
-      <tr><td>Declared attendance</td><td>travelling, notTravelling, noResponse</td><td>Passenger or authorized administrator.</td></tr>
-      <tr><td>Operational outcome</td><td>pending, pickedUp/boarded, droppedOff, absentNoShow, skipped, cancelled</td><td>Driver or authorized administrator.</td></tr>
+      <tr>
+        <th>Field</th>
+        <th>Possible values</th>
+        <th>Recorded by</th>
+      </tr>
+      <tr>
+        <td>Declared attendance</td>
+        <td>travelling, notTravelling, noResponse</td>
+        <td>Passenger or authorized administrator.</td>
+      </tr>
+      <tr>
+        <td>Operational outcome</td>
+        <td>pending, pickedUp/boarded, droppedOff, absentNoShow, skipped, cancelled</td>
+        <td>Driver or authorized administrator.</td>
+      </tr>
     </table>
-    <p>This distinction prevents a passenger's intention from being overwritten by the actual outcome and supports useful reporting later.</p>
+    <p>This distinction prevents a passenger's intention from being overwritten by the actual outcome and supports
+      useful reporting later.</p>
   </section>
 
   <section class="page-break">
     <h2>9. Access Control Matrix</h2>
     <table>
-      <tr><th>Capability</th><th>Passenger</th><th>Driver</th><th>Administrator</th></tr>
-      <tr><td>Self-register and manage permitted profile fields</td><td>Yes</td><td>Yes, pending approval</td><td>Yes</td></tr>
-      <tr><td>Submit personal morning/evening attendance</td><td>Yes</td><td>No</td><td>Override with audit</td></tr>
-      <tr><td>View assigned vehicle during active trip</td><td>Yes</td><td>Own assigned trip</td><td>All authorized active trips</td></tr>
-      <tr><td>View passenger stop details</td><td>Own only</td><td>Assigned active/scheduled trip only</td><td>Authorized operational scope</td></tr>
-      <tr><td>Start/end trip and publish vehicle position</td><td>No</td><td>Assigned driver only</td><td>Emergency override if designed</td></tr>
-      <tr><td>Record passenger operational outcomes</td><td>No</td><td>Assigned trip only</td><td>Yes, with audit</td></tr>
-      <tr><td>Manage routes, vehicles and assignments</td><td>No</td><td>No</td><td>Yes</td></tr>
-      <tr><td>Grant privileged roles</td><td>No</td><td>No</td><td>Restricted administrator only</td></tr>
-      <tr><td>View historical reports</td><td>Own limited history</td><td>Assigned limited history</td><td>Authorized business scope</td></tr>
+      <tr>
+        <th>Capability</th>
+        <th>Passenger</th>
+        <th>Driver</th>
+        <th>Administrator</th>
+      </tr>
+      <tr>
+        <td>Self-register and manage permitted profile fields</td>
+        <td>Yes</td>
+        <td>Yes, pending approval</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td>Submit personal morning/evening attendance</td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Override with audit</td>
+      </tr>
+      <tr>
+        <td>View assigned vehicle during active trip</td>
+        <td>Yes</td>
+        <td>Own assigned trip</td>
+        <td>All authorized active trips</td>
+      </tr>
+      <tr>
+        <td>View passenger stop details</td>
+        <td>Own only</td>
+        <td>Assigned active/scheduled trip only</td>
+        <td>Authorized operational scope</td>
+      </tr>
+      <tr>
+        <td>Start/end trip and publish vehicle position</td>
+        <td>No</td>
+        <td>Assigned driver only</td>
+        <td>Emergency override if designed</td>
+      </tr>
+      <tr>
+        <td>Record passenger operational outcomes</td>
+        <td>No</td>
+        <td>Assigned trip only</td>
+        <td>Yes, with audit</td>
+      </tr>
+      <tr>
+        <td>Manage routes, vehicles and assignments</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td>Grant privileged roles</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Restricted administrator only</td>
+      </tr>
+      <tr>
+        <td>View historical reports</td>
+        <td>Own limited history</td>
+        <td>Assigned limited history</td>
+        <td>Authorized business scope</td>
+      </tr>
     </table>
 
     <h2>10. User Interface and Screen Specification</h2>
@@ -400,24 +1131,66 @@
 
     <h3>10.2 Passenger Screens</h3>
     <table>
-      <tr><th>Screen</th><th>Main content and actions</th></tr>
-      <tr><td>Passenger home</td><td>Today's morning and evening cards, submission status, assigned route/vehicle and next action.</td></tr>
-      <tr><td>Attendance</td><td>Separate morning and evening selections, cutoff time, confirmation and last update.</td></tr>
-      <tr><td>My transport</td><td>Vehicle, driver, route, schedule and service messages.</td></tr>
-      <tr><td>My stops</td><td>Morning pickup point and evening drop-off point, map preview and update/approval workflow.</td></tr>
-      <tr><td>Live vehicle</td><td>Vehicle marker, own stop, trip state, last-updated time and stale/offline warning.</td></tr>
-      <tr><td>History</td><td>Limited personal morning/evening attendance and outcomes.</td></tr>
+      <tr>
+        <th>Screen</th>
+        <th>Main content and actions</th>
+      </tr>
+      <tr>
+        <td>Passenger home</td>
+        <td>Today's morning and evening cards, submission status, assigned route/vehicle and next action.</td>
+      </tr>
+      <tr>
+        <td>Attendance</td>
+        <td>Separate morning and evening selections, cutoff time, confirmation and last update.</td>
+      </tr>
+      <tr>
+        <td>My transport</td>
+        <td>Vehicle, driver, route, schedule and service messages.</td>
+      </tr>
+      <tr>
+        <td>My stops</td>
+        <td>Morning pickup point and evening drop-off point, map preview and update/approval workflow.</td>
+      </tr>
+      <tr>
+        <td>Live vehicle</td>
+        <td>Vehicle marker, own stop, trip state, last-updated time and stale/offline warning.</td>
+      </tr>
+      <tr>
+        <td>History</td>
+        <td>Limited personal morning/evening attendance and outcomes.</td>
+      </tr>
     </table>
 
     <h3>10.3 Driver Screens</h3>
     <table>
-      <tr><th>Screen</th><th>Main content and actions</th></tr>
-      <tr><td>Driver home</td><td>Assigned vehicle, next shift, passenger count, GPS/network readiness and start control.</td></tr>
-      <tr><td>Trip checklist</td><td>Correct vehicle, shift, route, location permission and passenger list confirmation.</td></tr>
-      <tr><td>Active trip</td><td>Large trip status, elapsed time, tracking indicator and safe end-trip control.</td></tr>
-      <tr><td>Stops map/list</td><td>Shift-appropriate ordered locations and passenger statuses.</td></tr>
-      <tr><td>Passenger status</td><td>Large, low-distraction actions for boarded/picked up, absent/no-show or exception.</td></tr>
-      <tr><td>Trip summary</td><td>Start/end times, passenger outcomes, exceptions and sync status.</td></tr>
+      <tr>
+        <th>Screen</th>
+        <th>Main content and actions</th>
+      </tr>
+      <tr>
+        <td>Driver home</td>
+        <td>Assigned vehicle, next shift, passenger count, GPS/network readiness and start control.</td>
+      </tr>
+      <tr>
+        <td>Trip checklist</td>
+        <td>Correct vehicle, shift, route, location permission and passenger list confirmation.</td>
+      </tr>
+      <tr>
+        <td>Active trip</td>
+        <td>Large trip status, elapsed time, tracking indicator and safe end-trip control.</td>
+      </tr>
+      <tr>
+        <td>Stops map/list</td>
+        <td>Shift-appropriate ordered locations and passenger statuses.</td>
+      </tr>
+      <tr>
+        <td>Passenger status</td>
+        <td>Large, low-distraction actions for boarded/picked up, absent/no-show or exception.</td>
+      </tr>
+      <tr>
+        <td>Trip summary</td>
+        <td>Start/end times, passenger outcomes, exceptions and sync status.</td>
+      </tr>
     </table>
 
     <h3>10.4 Administrator Web Screens</h3>
@@ -447,31 +1220,86 @@
     </ol>
 
     <h3>11.2 Accuracy and Freshness</h3>
-    <p>Mobile GPS cannot guarantee an exact point. Buildings, weather, device settings, tunnels, power-saving modes and network conditions can affect accuracy and delivery time. Therefore, the system should display the latest available position with a timestamp and consider the marker stale after a configurable threshold, initially proposed as 30–60 seconds.</p>
+    <p>Mobile GPS cannot guarantee an exact point. Buildings, weather, device settings, tunnels, power-saving modes and
+      network conditions can affect accuracy and delivery time. Therefore, the system should display the latest
+      available position with a timestamp and consider the marker stale after a configurable threshold, initially
+      proposed as 30–60 seconds.</p>
 
     <h3>11.3 Battery and Data Use</h3>
-    <p>Location frequency should adapt to the operational need. Updates can be more frequent while the vehicle is moving and less frequent when stationary. The driver should always see whether tracking is active. The MVP should store only the latest position unless route history is explicitly approved; if history is required, sampling and retention must be bounded.</p>
+    <p>Location frequency should adapt to the operational need. Updates can be more frequent while the vehicle is moving
+      and less frequent when stationary. The driver should always see whether tracking is active. The MVP should store
+      only the latest position unless route history is explicitly approved; if history is required, sampling and
+      retention must be bounded.</p>
 
     <h3>11.4 Safety</h3>
-    <p>The driver interface must minimize interaction while driving. Route preparation and passenger review should occur before movement. Navigation should be delegated to an appropriate navigation experience where adopted, and the app should not encourage manual map interaction while the vehicle is moving.</p>
+    <p>The driver interface must minimize interaction while driving. Route preparation and passenger review should occur
+      before movement. Navigation should be delegated to an appropriate navigation experience where adopted, and the app
+      should not encourage manual map interaction while the vehicle is moving.</p>
 
     <h2>12. Security and Privacy</h2>
     <table>
-      <tr><th>Control</th><th>Required approach</th></tr>
-      <tr><td>Authentication</td><td>All protected data requires a valid authenticated session. Password recovery and identity-provider configuration must follow the selected provider's secure workflow.</td></tr>
-      <tr><td>Role authorization</td><td>Passenger, driver and admin permissions must be enforced by backend/database security rules and privileged server logic.</td></tr>
-      <tr><td>Assignment authorization</td><td>Being a driver is insufficient to view every passenger. Access must also require assignment to the relevant trip/vehicle.</td></tr>
-      <tr><td>Least privilege</td><td>Clients read only the fields and records necessary for their current role and trip.</td></tr>
-      <tr><td>Location minimization</td><td>Driver location is collected only for active transport trips. Passenger home location should not be exposed broadly; use approved stop points and restricted access.</td></tr>
-      <tr><td>Consent and transparency</td><td>Explain what is collected, why, when tracking starts/stops, who can see it and how long it is retained.</td></tr>
-      <tr><td>Transport security</td><td>Use supported SDKs and encrypted network connections. Never embed unrestricted administrative secrets in mobile or web clients.</td></tr>
-      <tr><td>API key protection</td><td>Restrict map keys by platform, application identifiers, APIs and authorized origins. API keys are identifiers, not substitutes for authorization.</td></tr>
-      <tr><td>Audit</td><td>Record privileged role, assignment and trip changes without logging passwords, tokens or unnecessary precise coordinates.</td></tr>
-      <tr><td>Retention and deletion</td><td>Define approved periods for attendance, trip and location data, then implement deletion/anonymization accordingly.</td></tr>
-      <tr><td>Administrative security</td><td>Use stronger controls for administrators, ideally multi-factor authentication and separate production access.</td></tr>
+      <tr>
+        <th>Control</th>
+        <th>Required approach</th>
+      </tr>
+      <tr>
+        <td>Authentication</td>
+        <td>All protected data requires a valid authenticated session. Password recovery and identity-provider
+          configuration must follow the selected provider's secure workflow.</td>
+      </tr>
+      <tr>
+        <td>Role authorization</td>
+        <td>Passenger, driver and admin permissions must be enforced by backend/database security rules and privileged
+          server logic.</td>
+      </tr>
+      <tr>
+        <td>Assignment authorization</td>
+        <td>Being a driver is insufficient to view every passenger. Access must also require assignment to the relevant
+          trip/vehicle.</td>
+      </tr>
+      <tr>
+        <td>Least privilege</td>
+        <td>Clients read only the fields and records necessary for their current role and trip.</td>
+      </tr>
+      <tr>
+        <td>Location minimization</td>
+        <td>Driver location is collected only for active transport trips. Passenger home location should not be exposed
+          broadly; use approved stop points and restricted access.</td>
+      </tr>
+      <tr>
+        <td>Consent and transparency</td>
+        <td>Explain what is collected, why, when tracking starts/stops, who can see it and how long it is retained.</td>
+      </tr>
+      <tr>
+        <td>Transport security</td>
+        <td>Use supported SDKs and encrypted network connections. Never embed unrestricted administrative secrets in
+          mobile or web clients.</td>
+      </tr>
+      <tr>
+        <td>API key protection</td>
+        <td>Restrict map keys by platform, application identifiers, APIs and authorized origins. API keys are
+          identifiers, not substitutes for authorization.</td>
+      </tr>
+      <tr>
+        <td>Audit</td>
+        <td>Record privileged role, assignment and trip changes without logging passwords, tokens or unnecessary precise
+          coordinates.</td>
+      </tr>
+      <tr>
+        <td>Retention and deletion</td>
+        <td>Define approved periods for attendance, trip and location data, then implement deletion/anonymization
+          accordingly.</td>
+      </tr>
+      <tr>
+        <td>Administrative security</td>
+        <td>Use stronger controls for administrators, ideally multi-factor authentication and separate production
+          access.</td>
+      </tr>
     </table>
 
-    <div class="warning"><strong>Policy requirement:</strong> Before production use, the organization should approve a privacy notice, location-retention period, employee access policy and incident-response process appropriate to applicable law and company policy.</div>
+    <div class="warning"><strong>Policy requirement:</strong> Before production use, the organization should approve a
+      privacy notice, location-retention period, employee access policy and incident-response process appropriate to
+      applicable law and company policy.</div>
   </section>
 
   <section class="page-break">
@@ -479,7 +1307,8 @@
     <ol>
       <li>Only an authorized administrator may approve roles and transport assignments.</li>
       <li>A passenger's morning and evening attendance are separate records.</li>
-      <li>A passenger can submit attendance only for permitted dates and before the applicable cutoff, unless an audited override is used.</li>
+      <li>A passenger can submit attendance only for permitted dates and before the applicable cutoff, unless an audited
+        override is used.</li>
       <li>A passenger must not see vehicles or passenger information outside the assigned service.</li>
       <li>A driver can start only a trip assigned to that driver and vehicle.</li>
       <li>A vehicle and driver should not have conflicting active trips.</li>
@@ -494,15 +1323,45 @@
     <h2>14. Testing and Quality Assurance</h2>
     <h3>14.1 Test Levels</h3>
     <table>
-      <tr><th>Test type</th><th>Focus</th></tr>
-      <tr><td>Unit tests</td><td>Attendance cutoff calculations, trip-state transitions, role checks, mapping logic and validation.</td></tr>
-      <tr><td>Widget tests</td><td>Role-specific screens, loading/error states, morning/evening independence and large driver controls.</td></tr>
-      <tr><td>Integration tests</td><td>Registration, approval, assignment, attendance submission, trip start, live update, pickup outcome and trip end.</td></tr>
-      <tr><td>Security-rule tests</td><td>Prove that passengers and drivers cannot access unrelated users, routes, locations or privileged writes.</td></tr>
-      <tr><td>Device tests</td><td>Android and iOS permissions, background/foreground behavior, GPS loss, connectivity loss, battery restrictions and notification handling.</td></tr>
-      <tr><td>Web tests</td><td>Dashboard responsiveness, browser support, maps, filters, access control and assignment conflicts.</td></tr>
-      <tr><td>Performance tests</td><td>Multiple active vehicles, location update load, dashboard listeners and database query size.</td></tr>
-      <tr><td>User acceptance tests</td><td>Real passenger, driver and admin workflows using representative routes and shift schedules.</td></tr>
+      <tr>
+        <th>Test type</th>
+        <th>Focus</th>
+      </tr>
+      <tr>
+        <td>Unit tests</td>
+        <td>Attendance cutoff calculations, trip-state transitions, role checks, mapping logic and validation.</td>
+      </tr>
+      <tr>
+        <td>Widget tests</td>
+        <td>Role-specific screens, loading/error states, morning/evening independence and large driver controls.</td>
+      </tr>
+      <tr>
+        <td>Integration tests</td>
+        <td>Registration, approval, assignment, attendance submission, trip start, live update, pickup outcome and trip
+          end.</td>
+      </tr>
+      <tr>
+        <td>Security-rule tests</td>
+        <td>Prove that passengers and drivers cannot access unrelated users, routes, locations or privileged writes.
+        </td>
+      </tr>
+      <tr>
+        <td>Device tests</td>
+        <td>Android and iOS permissions, background/foreground behavior, GPS loss, connectivity loss, battery
+          restrictions and notification handling.</td>
+      </tr>
+      <tr>
+        <td>Web tests</td>
+        <td>Dashboard responsiveness, browser support, maps, filters, access control and assignment conflicts.</td>
+      </tr>
+      <tr>
+        <td>Performance tests</td>
+        <td>Multiple active vehicles, location update load, dashboard listeners and database query size.</td>
+      </tr>
+      <tr>
+        <td>User acceptance tests</td>
+        <td>Real passenger, driver and admin workflows using representative routes and shift schedules.</td>
+      </tr>
     </table>
 
     <h3>14.2 Critical Scenarios</h3>
@@ -533,40 +1392,123 @@
       <li>Conduct a controlled pilot with one route and a small user group.</li>
       <li>Review GPS reliability, attendance compliance, battery impact and support issues.</li>
       <li>Correct pilot findings before wider rollout.</li>
-      <li>Publish through the approved mobile distribution channels and deploy the admin web dashboard to a secured domain.</li>
+      <li>Publish through the approved mobile distribution channels and deploy the admin web dashboard to a secured
+        domain.</li>
     </ol>
 
     <h3>15.3 Operational Monitoring</h3>
-    <p>Monitor authentication failures, backend errors, crash-free sessions, notification delivery, stale active vehicles and unusual administrative activity. Alerts should avoid including sensitive personal or precise location data unless necessary and access-controlled.</p>
+    <p>Monitor authentication failures, backend errors, crash-free sessions, notification delivery, stale active
+      vehicles and unusual administrative activity. Alerts should avoid including sensitive personal or precise location
+      data unless necessary and access-controlled.</p>
   </section>
 
   <section class="page-break">
     <h2>16. Implementation Roadmap</h2>
-    <p>The following is an indicative 10–12 week MVP plan for a small team. Final duration depends on design approval, developer experience, testing devices and stakeholder response time.</p>
+    <p>The following is an indicative 10–12 week MVP plan for a small team. Final duration depends on design approval,
+      developer experience, testing devices and stakeholder response time.</p>
     <table>
-      <tr><th>Phase</th><th>Indicative period</th><th>Deliverables</th></tr>
-      <tr><td>1. Discovery and UX</td><td>Weeks 1–2</td><td>Confirmed policies, user journeys, wireframes, design system, data model and technical proof of concept.</td></tr>
-      <tr><td>2. Foundation</td><td>Weeks 2–3</td><td>Flutter structure, environments, authentication, account states, navigation and automated checks.</td></tr>
-      <tr><td>3. Admin master data</td><td>Weeks 3–5</td><td>User approval, vehicles, routes, stops and assignments.</td></tr>
-      <tr><td>4. Passenger workflow</td><td>Weeks 5–6</td><td>Passenger dashboard, separate attendance, assignment view and stop handling.</td></tr>
-      <tr><td>5. Driver workflow</td><td>Weeks 6–8</td><td>Shift list, passengers/stops, trip lifecycle and pickup/drop-off outcomes.</td></tr>
-      <tr><td>6. Live tracking</td><td>Weeks 8–9</td><td>Trip-bound location publishing, passenger map, admin fleet map and stale-state handling.</td></tr>
-      <tr><td>7. Notifications and hardening</td><td>Weeks 9–10</td><td>Core alerts, security-rule verification, audit, error handling and accessibility review.</td></tr>
-      <tr><td>8. Pilot and release</td><td>Weeks 11–12</td><td>Device testing, user acceptance, pilot, fixes, production configuration and release candidate.</td></tr>
+      <tr>
+        <th>Phase</th>
+        <th>Indicative period</th>
+        <th>Deliverables</th>
+      </tr>
+      <tr>
+        <td>1. Discovery and UX</td>
+        <td>Weeks 1–2</td>
+        <td>Confirmed policies, user journeys, wireframes, design system, data model and technical proof of concept.
+        </td>
+      </tr>
+      <tr>
+        <td>2. Foundation</td>
+        <td>Weeks 2–3</td>
+        <td>Flutter structure, environments, authentication, account states, navigation and automated checks.</td>
+      </tr>
+      <tr>
+        <td>3. Admin master data</td>
+        <td>Weeks 3–5</td>
+        <td>User approval, vehicles, routes, stops and assignments.</td>
+      </tr>
+      <tr>
+        <td>4. Passenger workflow</td>
+        <td>Weeks 5–6</td>
+        <td>Passenger dashboard, separate attendance, assignment view and stop handling.</td>
+      </tr>
+      <tr>
+        <td>5. Driver workflow</td>
+        <td>Weeks 6–8</td>
+        <td>Shift list, passengers/stops, trip lifecycle and pickup/drop-off outcomes.</td>
+      </tr>
+      <tr>
+        <td>6. Live tracking</td>
+        <td>Weeks 8–9</td>
+        <td>Trip-bound location publishing, passenger map, admin fleet map and stale-state handling.</td>
+      </tr>
+      <tr>
+        <td>7. Notifications and hardening</td>
+        <td>Weeks 9–10</td>
+        <td>Core alerts, security-rule verification, audit, error handling and accessibility review.</td>
+      </tr>
+      <tr>
+        <td>8. Pilot and release</td>
+        <td>Weeks 11–12</td>
+        <td>Device testing, user acceptance, pilot, fixes, production configuration and release candidate.</td>
+      </tr>
     </table>
 
     <h2>17. Risks and Mitigations</h2>
     <table>
-      <tr><th>Risk</th><th>Impact</th><th>Mitigation</th></tr>
-      <tr><td>Inaccurate or delayed GPS</td><td>Passenger trusts an outdated marker.</td><td>Show last-updated time, accuracy/stale state and never promise exact positioning.</td></tr>
-      <tr><td>Background tracking restrictions</td><td>Updates stop when the app is backgrounded.</td><td>Design with current Android/iOS permission models, test physical devices and provide driver status warnings.</td></tr>
-      <tr><td>Driver distraction</td><td>Safety incident.</td><td>Large controls, minimal interaction, pre-trip preparation and clear safety policy.</td></tr>
-      <tr><td>Unauthorized location access</td><td>Privacy and trust failure.</td><td>Backend-enforced role plus assignment checks, scoped listeners, audit and security testing.</td></tr>
-      <tr><td>Passengers fail to submit attendance</td><td>Unreliable stop list.</td><td>Reminders, visible deadlines, no-response state and an administrator policy for late changes.</td></tr>
-      <tr><td>Poor connectivity</td><td>Missing updates or actions.</td><td>Cache essential trip data, retry bounded writes and show sync state.</td></tr>
-      <tr><td>Uncontrolled cloud/maps usage</td><td>Unexpected cost.</td><td>Budget alerts, restricted queries, configurable location frequency, API-key restrictions and pilot monitoring.</td></tr>
-      <tr><td>Incorrect assignments</td><td>Wrong vehicle or data exposure.</td><td>Validation, effective dates, assignment preview, audit history and administrator review.</td></tr>
-      <tr><td>Scope growth</td><td>MVP delay.</td><td>Keep first-release acceptance criteria fixed and move enhancements to a prioritized backlog.</td></tr>
+      <tr>
+        <th>Risk</th>
+        <th>Impact</th>
+        <th>Mitigation</th>
+      </tr>
+      <tr>
+        <td>Inaccurate or delayed GPS</td>
+        <td>Passenger trusts an outdated marker.</td>
+        <td>Show last-updated time, accuracy/stale state and never promise exact positioning.</td>
+      </tr>
+      <tr>
+        <td>Background tracking restrictions</td>
+        <td>Updates stop when the app is backgrounded.</td>
+        <td>Design with current Android/iOS permission models, test physical devices and provide driver status warnings.
+        </td>
+      </tr>
+      <tr>
+        <td>Driver distraction</td>
+        <td>Safety incident.</td>
+        <td>Large controls, minimal interaction, pre-trip preparation and clear safety policy.</td>
+      </tr>
+      <tr>
+        <td>Unauthorized location access</td>
+        <td>Privacy and trust failure.</td>
+        <td>Backend-enforced role plus assignment checks, scoped listeners, audit and security testing.</td>
+      </tr>
+      <tr>
+        <td>Passengers fail to submit attendance</td>
+        <td>Unreliable stop list.</td>
+        <td>Reminders, visible deadlines, no-response state and an administrator policy for late changes.</td>
+      </tr>
+      <tr>
+        <td>Poor connectivity</td>
+        <td>Missing updates or actions.</td>
+        <td>Cache essential trip data, retry bounded writes and show sync state.</td>
+      </tr>
+      <tr>
+        <td>Uncontrolled cloud/maps usage</td>
+        <td>Unexpected cost.</td>
+        <td>Budget alerts, restricted queries, configurable location frequency, API-key restrictions and pilot
+          monitoring.</td>
+      </tr>
+      <tr>
+        <td>Incorrect assignments</td>
+        <td>Wrong vehicle or data exposure.</td>
+        <td>Validation, effective dates, assignment preview, audit history and administrator review.</td>
+      </tr>
+      <tr>
+        <td>Scope growth</td>
+        <td>MVP delay.</td>
+        <td>Keep first-release acceptance criteria fixed and move enhancements to a prioritized backlog.</td>
+      </tr>
     </table>
 
     <h2>18. Future Enhancements</h2>
@@ -608,7 +1550,8 @@
     </ol>
 
     <h2>20. MVP Acceptance Criteria</h2>
-    <p>The MVP can be considered functionally complete when all of the following are demonstrated in staging and accepted by stakeholders:</p>
+    <p>The MVP can be considered functionally complete when all of the following are demonstrated in staging and
+      accepted by stakeholders:</p>
     <ul>
       <li>A user can register, but cannot access operational data until approved.</li>
       <li>An administrator can approve users and assign passengers, drivers, vehicles and routes.</li>
@@ -620,36 +1563,75 @@
       <li>The driver can record passenger outcomes and end the trip.</li>
       <li>Location publishing stops after trip completion.</li>
       <li>Unauthorized cross-route and privileged access attempts are rejected by backend rules.</li>
-      <li>Core workflows pass on supported Android and iOS devices and the admin dashboard works in approved browsers.</li>
+      <li>Core workflows pass on supported Android and iOS devices and the admin dashboard works in approved browsers.
+      </li>
       <li>Privacy, retention, account approval and operational policies have been approved.</li>
     </ul>
 
     <h2>Conclusion</h2>
-    <p>Seriya addresses a clear daily coordination problem by giving each participant the information appropriate to their role. Separating the day into a morning inbound trip and an evening outbound trip is central to the design: each shift has its own attendance, stop use, driver workflow, trip status and tracking lifecycle. A Flutter mobile application, a separate administration dashboard and a secured real-time backend provide a practical MVP architecture. The design remains intentionally modular so later capabilities such as ETA, optimization, notifications, reporting and HR integration can be introduced without changing the core role and trip model.</p>
+    <p>Seriya addresses a clear daily coordination problem by giving each participant the information appropriate to
+      their role. Separating the day into a morning inbound trip and an evening outbound trip is central to the design:
+      each shift has its own attendance, stop use, driver workflow, trip status and tracking lifecycle. A Flutter mobile
+      application, a separate administration dashboard and a secured real-time backend provide a practical MVP
+      architecture. The design remains intentionally modular so later capabilities such as ETA, optimization,
+      notifications, reporting and HR integration can be introduced without changing the core role and trip model.</p>
 
     <h2>References</h2>
     <ol class="small">
-      <li>Flutter documentation, “Create a new Flutter app” and Flutter platform guidance: https://docs.flutter.dev/reference/create-new-app</li>
-      <li>Firebase documentation, “Get started with Firebase in your Flutter project”: https://firebase.google.com/docs/flutter/setup</li>
+      <li>Flutter documentation, “Create a new Flutter app” and Flutter platform guidance:
+        https://docs.flutter.dev/reference/create-new-app</li>
+      <li>Firebase documentation, “Get started with Firebase in your Flutter project”:
+        https://firebase.google.com/docs/flutter/setup</li>
       <li>Firebase Authentication documentation: https://firebase.google.com/docs/auth</li>
-      <li>Firebase Realtime Database for Flutter, “Read and Write Data”: https://firebase.google.com/docs/database/flutter/read-and-write</li>
+      <li>Firebase Realtime Database for Flutter, “Read and Write Data”:
+        https://firebase.google.com/docs/database/flutter/read-and-write</li>
       <li>Google Maps for Flutter, project configuration: https://developers.google.com/maps/flutter-package/config</li>
       <li>Flutter testing overview: https://docs.flutter.dev/testing/overview</li>
     </ol>
 
     <h2>Glossary</h2>
     <table>
-      <tr><th>Term</th><th>Meaning in this report</th></tr>
-      <tr><td>Passenger</td><td>An employee authorized to use company transport.</td></tr>
-      <tr><td>Morning shift / trip</td><td>Inbound service collecting passengers and transporting them to the office.</td></tr>
-      <tr><td>Evening shift / trip</td><td>Outbound service collecting passengers from the office and dropping them at approved destinations.</td></tr>
-      <tr><td>Attendance</td><td>A passenger's shift-specific declaration of whether transport will be used, plus the separately recorded operational outcome.</td></tr>
-      <tr><td>Live location</td><td>The latest available authorized GPS/network position received from the driver's device during an active trip.</td></tr>
-      <tr><td>MVP</td><td>Minimum Viable Product: the smallest release that supports the complete essential workflow.</td></tr>
-      <tr><td>RBAC</td><td>Role-Based Access Control.</td></tr>
-      <tr><td>ETA</td><td>Estimated Time of Arrival.</td></tr>
+      <tr>
+        <th>Term</th>
+        <th>Meaning in this report</th>
+      </tr>
+      <tr>
+        <td>Passenger</td>
+        <td>An employee authorized to use company transport.</td>
+      </tr>
+      <tr>
+        <td>Morning shift / trip</td>
+        <td>Inbound service collecting passengers and transporting them to the office.</td>
+      </tr>
+      <tr>
+        <td>Evening shift / trip</td>
+        <td>Outbound service collecting passengers from the office and dropping them at approved destinations.</td>
+      </tr>
+      <tr>
+        <td>Attendance</td>
+        <td>A passenger's shift-specific declaration of whether transport will be used, plus the separately recorded
+          operational outcome.</td>
+      </tr>
+      <tr>
+        <td>Live location</td>
+        <td>The latest available authorized GPS/network position received from the driver's device during an active
+          trip.</td>
+      </tr>
+      <tr>
+        <td>MVP</td>
+        <td>Minimum Viable Product: the smallest release that supports the complete essential workflow.</td>
+      </tr>
+      <tr>
+        <td>RBAC</td>
+        <td>Role-Based Access Control.</td>
+      </tr>
+      <tr>
+        <td>ETA</td>
+        <td>Estimated Time of Arrival.</td>
+      </tr>
     </table>
     <p class="small center">End of document — Seriya Employment Transport Management System, Version 1.0</p>
   </section>
 </body>
+
 </html>

@@ -153,3 +153,21 @@ tbody tr:hover { background:#fbfdfc; }
   .metric-card { min-height:94px; gap:11px; padding:14px; }.metric-icon { width:38px; height:38px; }.metric-card strong { font-size:22px; }
   .panel-heading { padding:20px 18px; }.toolbar { flex-direction:column; }.search-box,.select-wrap,.select-wrap select { width:100%; }
 }
+
+/* Modal Styles */
+.modal-backdrop { position:fixed; z-index:50; inset:0; background:rgba(4,24,34,.6); backdrop-filter:blur(4px); display:grid; place-items:center; padding:20px; animation:fadeIn .2s ease-out; }
+.modal-content { width:100%; max-width:480px; background:white; border-radius:18px; box-shadow:0 15px 40px rgba(0,0,0,.15); overflow:hidden; animation:slideUp .3s cubic-bezier(0.16, 1, 0.3, 1); }
+.modal-header { display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid #e8efed; }
+.modal-header h3 { margin:0; color:var(--navy); font-size:18px; letter-spacing:-.01em; }
+.modal-form { padding:24px; display:flex; flex-direction:column; gap:16px; }
+.modal-form label { display:block; color:#304b58; font-size:12px; font-weight:700; margin-bottom:6px; }
+.modal-form input, .modal-form select { width:100%; height:44px; padding:0 14px; border:1px solid #d9e5e2; border-radius:10px; color:var(--navy); background:#fbfdfc; outline:0; font-size:13px; transition:.2s; }
+.modal-form input:focus, .modal-form select:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(9,168,144,.11); }
+.input-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:8px; padding-top:20px; border-top:1px solid #e8efed; }
+.secondary-button { height:44px; padding:0 20px; border:1px solid #cfddda; border-radius:10px; color:#506872; background:white; font-size:13px; font-weight:700; transition:.2s; }
+.secondary-button:hover { background:#f4f7f7; color:var(--navy); }
+.primary-button.small { height:40px; padding:0 16px; margin-top:0; border-radius:10px; font-size:12px; width:auto; }
+
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }

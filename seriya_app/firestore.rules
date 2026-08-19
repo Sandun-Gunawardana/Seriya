@@ -32,6 +32,11 @@ service cloud.firestore {
       allow delete: if isApprovedAdmin();
     }
 
+    match /vehicles/{vehicleId} {
+      allow read: if signedIn();
+      allow write: if isApprovedAdmin();
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
