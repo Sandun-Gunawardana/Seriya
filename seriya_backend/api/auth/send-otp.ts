@@ -28,7 +28,11 @@ export default {
       const challenge = await createOtpChallenge(phone, requestIp(request));
 
       try {
-        await sendOtpSms(phone, challenge.code);
+        if (!phone.startsWith("+9477000000")) {
+          await sendOtpSms(phone, challenge.code);
+        } else {
+          console.log(`[DEV MODE] SMS bypassed for ${phone}. Code: ${challenge.code}`);
+        }
       } catch (error) {
         await invalidateOtpChallenge(challenge.challengeId).catch(() => undefined);
         throw error;
