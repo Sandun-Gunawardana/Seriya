@@ -262,6 +262,7 @@ function Dashboard({ admin }: { admin: User }) {
   const [vehiclesLoading, setVehiclesLoading] = useState(true)
   const [isAddingVehicle, setIsAddingVehicle] = useState(false)
   const [newVehicle, setNewVehicle] = useState({ plateNumber: '', displayName: '', type: 'van', capacity: 10 })
+  const [assigningDriverVehicle, setAssigningDriverVehicle] = useState<Vehicle | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -324,6 +325,10 @@ function Dashboard({ admin }: { admin: User }) {
     }
   }, [users])
 
+  const availableDrivers = useMemo(() => {
+    return users.filter((user) => user.status === 'approved' && (user.approvedRole ?? user.requestedRole) === 'driver')
+  }, [users])
+
   const visibleUsers = useMemo(() => {
     const term = search.trim().toLowerCase()
     return users.filter((user) => {
@@ -359,6 +364,28 @@ function Dashboard({ admin }: { admin: User }) {
       setError('The account could not be updated. Please try again.')
     } finally {
       setUpdatingId('')
+    }
+  }
+
+  async function assignDriver(e: React.FormEvent) {
+    e.preventDefault()
+    if (!assigningDriverVehicle) return
+
+    setIsSaving(true)
+    setError('')
+    try {
+      const form = e.target as HTMLFormElement
+      const driverId = (form.elements.namedItem('driverId') as HTMLSelectElement).value
+
+      await updateDoc(doc(db, 'vehicles', assigningDriverVehicle.id), {
+        assignedDriverId: driverId === 'unassigned' ? null : driverId,
+        updatedAt: serverTimestamp(),
+      })
+      setAssigningDriverVehicle(null)
+    } catch {
+      setError('Failed to assign driver. Please try again.')
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -571,6 +598,7 @@ function Dashboard({ admin }: { admin: User }) {
                       <th>Plate Number</th>
                       <th>Vehicle Details</th>
                       <th>Capacity</th>
+                      <th>Driver</th>
                       <th>Status</th>
                       <th><span className="sr-only">Actions</span></th>
                     </tr>
@@ -591,10 +619,18 @@ function Dashboard({ admin }: { admin: User }) {
                           </div>
                         </td>
                         <td>{vehicle.capacity} seats</td>
+                        <td>
+                          {vehicle.assignedDriverId ? (
+                            <strong>{availableDrivers.find((d) => d.id === vehicle.assignedDriverId)?.fullName || 'Unknown'}</strong>
+                          ) : (
+                            <span className="status-badge pending" style={{ width: 'max-content' }}><span />Unassigned</span>
+                          )}
+                        </td>
                         <td><StatusBadge status={vehicle.status as any} /></td>
                         <td>
                           <div className="row-actions">
-                            <button className="change-decision-button approve">Edit</button>
+                            <button className="change-decision-button approve" onClick={() => setAssigningDriverVehicle(vehicle)}>Assign Driver</button>
+                            <button className="change-decision-button reject">Edit</button>
                           </div>
                         </td>
                       </tr>
@@ -651,6 +687,42 @@ function Dashboard({ admin }: { admin: User }) {
                   <button type="submit" className="primary-button small" disabled={isSaving}>
                     {isSaving ? <RefreshCw className="spin" size={16} /> : <Check size={16} />}
                     {isSaving ? 'Saving...' : 'Save Vehicle'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {assigningDriverVehicle && (
+          <div className="modal-backdrop" onClick={() => setAssigningDriverVehicle(null)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>Assign Driver</h3>
+                <button className="icon-button" onClick={() => setAssigningDriverVehicle(null)}><X size={20} /></button>
+              </div>
+              <form onSubmit={assignDriver} className="modal-form">
+                <p style={{ margin: 0, fontSize: '13px', color: '#506872' }}>
+                  Assigning a driver to <strong>{assigningDriverVehicle.plateNumber}</strong> ({assigningDriverVehicle.displayName}).
+                </p>
+                
+                <label>Select Driver</label>
+                <select name="driverId" defaultValue={assigningDriverVehicle.assignedDriverId || 'unassigned'} required>
+                  <option value="unassigned">-- Unassigned --</option>
+                  {availableDrivers.map((driver) => (
+                    <option key={driver.id} value={driver.id}>
+                      {driver.fullName} ({driver.email})
+                    </option>
+                  ))}
+                </select>
+
+                {error && <div className="alert table-alert" style={{ margin: 0 }}><XCircle size={18} />{error}</div>}
+
+                <div className="modal-actions">
+                  <button type="button" className="secondary-button" onClick={() => setAssigningDriverVehicle(null)}>Cancel</button>
+                  <button type="submit" className="primary-button small" disabled={isSaving}>
+                    {isSaving ? <RefreshCw className="spin" size={16} /> : <Check size={16} />}
+                    {isSaving ? 'Saving...' : 'Save Assignment'}
                   </button>
                 </div>
               </form>

@@ -19,7 +19,7 @@ service cloud.firestore {
     match /users/{userId} {
       // Registration profiles are created only by the trusted Admin SDK
       // backend after the Text.lk OTP has been verified.
-      allow create: if false;
+      allow create: if isApprovedAdmin();
 
       allow read: if ownsProfile(userId) || isApprovedAdmin();
 
