@@ -263,6 +263,8 @@ function Dashboard({ admin }: { admin: User }) {
   const [isAddingVehicle, setIsAddingVehicle] = useState(false)
   const [newVehicle, setNewVehicle] = useState({ plateNumber: '', displayName: '', type: 'van', capacity: 10 })
   const [assigningDriverVehicle, setAssigningDriverVehicle] = useState<Vehicle | null>(null)
+  const [isAddingMockUser, setIsAddingMockUser] = useState(false)
+  const [newMockUser, setNewMockUser] = useState({ fullName: '', phoneNumber: '', email: '', role: 'driver' })
   const [isSaving, setIsSaving] = useState(false)
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -364,6 +366,30 @@ function Dashboard({ admin }: { admin: User }) {
       setError('The account could not be updated. Please try again.')
     } finally {
       setUpdatingId('')
+    }
+  }
+
+  async function saveMockUser(e: React.FormEvent) {
+    e.preventDefault()
+    setIsSaving(true)
+    setError('')
+    try {
+      await addDoc(collection(db, 'users'), {
+        fullName: newMockUser.fullName,
+        phoneNumber: newMockUser.phoneNumber,
+        email: newMockUser.email,
+        status: 'approved',
+        requestedRole: newMockUser.role,
+        approvedRole: newMockUser.role,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      })
+      setIsAddingMockUser(false)
+      setNewMockUser({ fullName: '', phoneNumber: '', email: '', role: 'driver' })
+    } catch {
+      setError('Failed to create mock user. Check firestore rules.')
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -473,6 +499,9 @@ function Dashboard({ admin }: { admin: User }) {
                     <p>Review employee requests and assign their approved access.</p>
                   </div>
                   <div className="toolbar">
+                    <button className="primary-button small" onClick={() => setIsAddingMockUser(true)}>
+                      <Plus size={16} /> Add Test User
+                    </button>
                     <div className="search-box">
                       <Search size={18} />
                       <input
@@ -723,6 +752,51 @@ function Dashboard({ admin }: { admin: User }) {
                   <button type="submit" className="primary-button small" disabled={isSaving}>
                     {isSaving ? <RefreshCw className="spin" size={16} /> : <Check size={16} />}
                     {isSaving ? 'Saving...' : 'Save Assignment'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {isAddingMockUser && (
+          <div className="modal-backdrop" onClick={() => setIsAddingMockUser(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>Add Test User</h3>
+                <button className="icon-button" onClick={() => setIsAddingMockUser(false)}><X size={20} /></button>
+              </div>
+              <form onSubmit={saveMockUser} className="modal-form">
+                <p style={{ margin: 0, fontSize: '12px', color: '#617780' }}>
+                  This creates a mock user instantly approved as a passenger or driver.
+                </p>
+                <label>Full Name</label>
+                <input required placeholder="e.g. John Doe" value={newMockUser.fullName} onChange={(e) => setNewMockUser({ ...newMockUser, fullName: e.target.value })} />
+                
+                <div className="input-row">
+                  <div className="input-group">
+                    <label>Phone Number</label>
+                    <input required type="tel" placeholder="e.g. +94771234567" value={newMockUser.phoneNumber} onChange={(e) => setNewMockUser({ ...newMockUser, phoneNumber: e.target.value })} />
+                  </div>
+                  <div className="input-group">
+                    <label>Role</label>
+                    <select value={newMockUser.role} onChange={(e) => setNewMockUser({ ...newMockUser, role: e.target.value })}>
+                      <option value="driver">Driver</option>
+                      <option value="passenger">Passenger</option>
+                    </select>
+                  </div>
+                </div>
+
+                <label>Email (Optional)</label>
+                <input type="email" placeholder="e.g. john@example.com" value={newMockUser.email} onChange={(e) => setNewMockUser({ ...newMockUser, email: e.target.value })} />
+
+                {error && <div className="alert table-alert" style={{ margin: 0 }}><XCircle size={18} />{error}</div>}
+
+                <div className="modal-actions">
+                  <button type="button" className="secondary-button" onClick={() => setIsAddingMockUser(false)}>Cancel</button>
+                  <button type="submit" className="primary-button small" disabled={isSaving}>
+                    {isSaving ? <RefreshCw className="spin" size={16} /> : <Check size={16} />}
+                    {isSaving ? 'Creating...' : 'Create User'}
                   </button>
                 </div>
               </form>
