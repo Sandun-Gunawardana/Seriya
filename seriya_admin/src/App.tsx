@@ -23,6 +23,8 @@ import {
   X,
   XCircle,
   Plus,
+  Trash2,
+  Pencil,
 } from 'lucide-react'
 import {
   onAuthStateChanged,
@@ -38,6 +40,8 @@ import {
   serverTimestamp,
   updateDoc,
   addDoc,
+  deleteDoc,
+  query,
   type Timestamp,
 } from 'firebase/firestore'
 
@@ -265,6 +269,7 @@ function Dashboard({ admin }: { admin: User }) {
   const [assigningDriverVehicle, setAssigningDriverVehicle] = useState<Vehicle | null>(null)
   const [isAddingMockUser, setIsAddingMockUser] = useState(false)
   const [newMockUser, setNewMockUser] = useState({ fullName: '', phoneNumber: '', email: '', role: 'driver' })
+  const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -388,6 +393,37 @@ function Dashboard({ admin }: { admin: User }) {
       setNewMockUser({ fullName: '', phoneNumber: '', email: '', role: 'driver' })
     } catch {
       setError('Failed to create mock user. Check firestore rules.')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  async function removeUser(userId: string) {
+    if (!window.confirm('Are you sure you want to permanently delete this user?')) return
+    setError('')
+    try {
+      await deleteDoc(doc(db, 'users', userId))
+    } catch {
+      setError('Failed to delete user.')
+    }
+  }
+
+  async function saveEditedUser(e: React.FormEvent) {
+    e.preventDefault()
+    if (!editingUser) return
+    setIsSaving(true)
+    setError('')
+    try {
+      await updateDoc(doc(db, 'users', editingUser.id), {
+        fullName: editingUser.fullName,
+        phone: editingUser.phone,
+        email: editingUser.email,
+        requestedRole: editingUser.requestedRole,
+        updatedAt: serverTimestamp(),
+      })
+      setEditingUser(null)
+    } catch {
+      setError('Failed to update user.')
     } finally {
       setIsSaving(false)
     }
@@ -586,6 +622,18 @@ function Dashboard({ admin }: { admin: User }) {
                             ) : (
                               <span className="completed-action"><CheckCircle2 size={16} />Reviewed</span>
                             )}
+                            <div className="row-actions" style={{ marginTop: '6px' }}>
+                              <button
+                                className="change-decision-button reject"
+                                onClick={() => setEditingUser(user)}
+                                title="Edit"
+                              ><Pencil size={15} /> Edit</button>
+                              <button
+                                className="change-decision-button reject"
+                                onClick={() => removeUser(user.id)}
+                                title="Delete"
+                              ><Trash2 size={15} /> Delete</button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -803,6 +851,48 @@ function Dashboard({ admin }: { admin: User }) {
             </div>
           </div>
         )}
+
+        {editingUser && (
+          <div className="modal-backdrop" onClick={() => setEditingUser(null)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>Edit User</h3>
+                <button className="icon-button" onClick={() => setEditingUser(null)}><X size={20} /></button>
+              </div>
+              <form onSubmit={saveEditedUser} className="modal-form">
+                <label>Full Name</label>
+                <input required placeholder="e.g. John Doe" value={editingUser.fullName} onChange={(e) => setEditingUser({ ...editingUser, fullName: e.target.value })} />
+                
+                <div className="input-row">
+                  <div className="input-group">
+                    <label>Phone Number</label>
+                    <input required type="tel" placeholder="e.g. +94771234567" value={editingUser.phone} onChange={(e) => setEditingUser({ ...editingUser, phone: e.target.value })} />
+                  </div>
+                  <div className="input-group">
+                    <label>Role</label>
+                    <select value={editingUser.requestedRole} onChange={(e) => setEditingUser({ ...editingUser, requestedRole: e.target.value as 'passenger' | 'driver' })}>
+                      <option value="driver">Driver</option>
+                      <option value="passenger">Passenger</option>
+                    </select>
+                  </div>
+                </div>
+
+                <label>Email (Optional)</label>
+                <input type="email" placeholder="e.g. john@example.com" value={editingUser.email} onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })} />
+
+                {error && <div className="alert table-alert" style={{ margin: 0 }}><XCircle size={18} />{error}</div>}
+
+                <div className="modal-actions">
+                  <button type="button" className="secondary-button" onClick={() => setEditingUser(null)}>Cancel</button>
+                  <button type="submit" className="primary-button small" disabled={isSaving}>
+                    {isSaving ? <RefreshCw className="spin" size={16} /> : <Check size={16} />}
+                    {isSaving ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   )
@@ -820,11 +910,13 @@ function BrandMark({ inverse = false }: { inverse?: boolean }) {
   return <div className={inverse ? 'brand inverse' : 'brand'}><span><BusFront size={23} /></span><div><strong>SERIYA</strong><small>ADMIN CONSOLE</small></div></div>
 }
 
-function initials(value: string) {
+function initials(value?: string | null) {
+  if (!value) return 'A'
   return value.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase() || 'A'
 }
 
-function capitalize(value: string) {
+function capitalize(value?: string | null) {
+  if (!value) return ''
   return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
