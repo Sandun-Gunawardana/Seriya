@@ -587,52 +587,54 @@ function Dashboard({ admin }: { admin: User }) {
                           <td>{formatDate(user.createdAt)}</td>
                           <td><StatusBadge status={user.status} /></td>
                           <td>
-                            {user.status === 'pending' ? (
-                              <div className="row-actions">
+                            <div className="row-actions">
+                              {user.status === 'pending' && (
+                                <>
+                                  <button
+                                    className="approve-button"
+                                    disabled={updatingId === user.id}
+                                    onClick={() => updateAccount(user, 'approved')}
+                                    title="Approve"
+                                  ><Check size={16} /></button>
+                                  <button
+                                    className="reject-button"
+                                    disabled={updatingId === user.id}
+                                    onClick={() => updateAccount(user, 'rejected')}
+                                    title="Reject"
+                                  ><X size={17} /></button>
+                                </>
+                              )}
+                              {user.status === 'approved' && (
                                 <button
-                                  className="approve-button"
-                                  disabled={updatingId === user.id}
-                                  onClick={() => updateAccount(user, 'approved')}
-                                ><Check size={16} />Approve</button>
-                                <button
-                                  className="reject-button"
+                                  className="change-decision-button reject"
                                   disabled={updatingId === user.id}
                                   onClick={() => updateAccount(user, 'rejected')}
-                                  title="Reject"
-                                ><X size={17} /></button>
-                              </div>
-                            ) : user.status === 'approved' ? (
+                                  title="Change to rejected"
+                                >
+                                  <X size={15} />
+                                </button>
+                              )}
+                              {user.status === 'rejected' && (
+                                <button
+                                  className="change-decision-button approve"
+                                  disabled={updatingId === user.id}
+                                  onClick={() => updateAccount(user, 'approved')}
+                                  title="Approve instead"
+                                >
+                                  <Check size={15} />
+                                </button>
+                              )}
                               <button
-                                className="change-decision-button reject"
-                                disabled={updatingId === user.id}
-                                onClick={() => updateAccount(user, 'rejected')}
-                              >
-                                <X size={15} />
-                                Change to rejected
-                              </button>
-                            ) : user.status === 'rejected' ? (
-                              <button
-                                className="change-decision-button approve"
-                                disabled={updatingId === user.id}
-                                onClick={() => updateAccount(user, 'approved')}
-                              >
-                                <Check size={15} />
-                                Approve instead
-                              </button>
-                            ) : (
-                              <span className="completed-action"><CheckCircle2 size={16} />Reviewed</span>
-                            )}
-                            <div className="row-actions" style={{ marginTop: '6px' }}>
-                              <button
-                                className="change-decision-button reject"
+                                className="change-decision-button"
+                                style={{ color: '#506872' }}
                                 onClick={() => setEditingUser(user)}
                                 title="Edit"
-                              ><Pencil size={15} /> Edit</button>
+                              ><Pencil size={15} /></button>
                               <button
                                 className="change-decision-button reject"
                                 onClick={() => removeUser(user.id)}
                                 title="Delete"
-                              ><Trash2 size={15} /> Delete</button>
+                              ><Trash2 size={15} /></button>
                             </div>
                           </td>
                         </tr>
